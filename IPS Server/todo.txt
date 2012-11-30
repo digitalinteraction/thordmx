@@ -1,0 +1,3 @@
+﻿- instructions of how to update venue
+- upgrade to variable number of channels (>512)
+- editing same venue from venue editor does not copy, instead replaces.

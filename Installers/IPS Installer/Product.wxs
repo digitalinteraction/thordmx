@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="c1952552-df27-4332-234d-12c71167b43f" Name="IPS" Language="1033" Version="1.0.0.0" Manufacturer="Newcastle University" UpgradeCode="3709f8aa-0c54-42f6-2345-f9aeb6d2ff53">
+    <Package InstallerVersion="200" Compressed="yes" />
+
+    <Icon Id="icon.ico" SourceFile="icon.ico" />
+    <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+    <Property Id="ARPHELPLINK" Value="http://ips.codeplex.com/" />
+
+    <WixVariable Id="WixUIBannerBmp" Value="small.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="big.bmp" />
+
+    <PropertyRef Id="NETFRAMEWORK40FULL" />
+
+    <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+
+    <Condition Message="This application requires .NET Framework 4.0. Please install the .NET Framework then run this installer again.">
+      <![CDATA[Installed OR NETFRAMEWORK40FULL]]>
+    </Condition>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="exhibitforgedir" Name="IPS">
+          <Directory Id="INSTALLLOCATION1" Name="Server">
+
+          </Directory>
+          <Directory Id="INSTALLLOCATION2" Name="Venue Builder">
+
+          </Directory>
+          <!--<Directory Id="INSTALLLOCATION3" Name="Tablet Control Desk">
+
+          </Directory>-->
+        </Directory>
+      </Directory>
+
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="IPS"/>
+      </Directory>
+    </Directory>
+
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut1" Guid="c1952552-df27-4332-234d-12c71167b432">
+        <Shortcut Id="ApplicationStartMenuShortcut1"
+                  Name="IPS Server"
+                  Description="Interaction Production Control Server"
+                  Target="[INSTALLLOCATION1]IPSServer.exe"
+                  WorkingDirectory="INSTALLLOCATION1"/>
+        <RegistryValue Root="HKCU" Key="Software\Microsoft\IPSServer" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+      </Component>
+
+      <Component Id="ApplicationShortcut2" Guid="c1952552-df27-4332-234d-12c71167b434">
+      
+        <Shortcut Id="ApplicationStartMenuShortcut2"
+                  Name="IPS Venue Builder"
+                  Description="Venue Building Application"
+                  Target="[INSTALLLOCATION2]IPS.VenueBuilder.exe"
+                  WorkingDirectory="INSTALLLOCATION2"/>
+
+        <RegistryValue Root="HKCU" Key="Software\Microsoft\IPSBuilder" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+
+      <!--<Component Id="ApplicationShortcut3" Guid="c1952552-df27-4332-234d-12c71167b43d">
+
+        <Shortcut Id="ApplicationStartMenuShortcut3"
+                  Name="NUILight Tablet Controller"
+                  Description="Tablet Lighting Desk"
+                  Target="[INSTALLLOCATION3]NUILight.TabletDesk.exe"
+                  WorkingDirectory="INSTALLLOCATION3"/>
+        <RegistryValue Root="HKCU" Key="Software\Microsoft\IPSTablet" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+       
+      </Component>-->
+    </DirectoryRef>
+
+    <Feature Id="ProductFeature1" Title="Lighting Control Server" Level="1">
+      <ComponentGroupRef Id="IPS_Server.Binaries" />
+      <ComponentGroupRef Id="IPS_Server.Content" />
+      <ComponentGroupRef Id="IPS_Server.Satellites" />
+      <ComponentRef Id="ApplicationShortcut1" />
+    </Feature>
+
+    <Feature Id="ProductFeature2" Title="Venue Builder" Level="1">
+      <ComponentGroupRef Id="IPS_Venue_Builder.Binaries" />
+      <ComponentGroupRef Id="IPS_Venue_Builder.Content" />
+      <ComponentGroupRef Id="IPS_Venue_Builder.Satellites" />
+      <ComponentRef Id="ApplicationShortcut2" />
+    </Feature>
+
+    <!--<Feature Id="ProductFeature3" Title="Tablet Control Desk" Level="1">
+      <ComponentGroupRef Id="NUILight_Tablet_Desk.Binaries" />
+      <ComponentGroupRef Id="NUILight_Tablet_Desk.Content" />
+      <ComponentGroupRef Id="NUILight_Tablet_Desk.Satellites" />
+      <ComponentRef Id="ApplicationShortcut3" />
+    </Feature>-->
+
+    <UIRef Id="WixUI_FeatureTree" />
+  </Product>
+</Wix>

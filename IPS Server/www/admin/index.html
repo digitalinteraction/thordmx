@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html manifest="cache.manifest">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<title>NUILight Server</title>
+	<link rel="stylesheet"  href="./template/jquery.mobile-1.1.1.min.css" />
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	
+	<link rel="apple-touch-startup-image" href="./template/images/phonesplash.png" />
+	<link rel="apple-touch-icon" href="./template/images/favicon.png" />
+	<link rel="SHORTCUT ICON" href="./template/images/favicon.png"/>
+	
+	<script type="text/javascript" src="./template/jquery.js"></script>
+	<script type="text/javascript" src="./template/jquery.mobile-1.1.1.min.js"></script>
+    <script type="text/javascript" src="./template/verticalSlider.js"></script>
+	<script type="text/javascript">
+
+    var system = '%systemname%';
+
+    var loaded = false;
+
+
+    $('#control').live('pagebeforecreate', function (event) {
+        //create sliders for the controller...
+        var i;
+        if (!loaded)
+         {
+            //create html
+            for (i = 0; i < 10; i++) {
+                $('#sliders').append('<div class="faderdiv"><div id="label' + i + '" class="faderl">' + (i + 1) + '</div><input class="chanselector" type="range" name="slider' + i + '" rel="' + i + '" id="slider-' + i + '" value="0" min="0" max="255" step="5" /><div style="clear:both;"></div><div id="progress' + i + '" class="progress"><div class="progress_inner"></div></div></div>');
+            }
+
+            for (i = 0; i < 10; i++) {
+                $('#slidersv').append('<div class="faderdivv"><div id="labelv' + i + '" class="faderv">' + (i + 1) + '</div><input sliderOrientation="verticalInverted" class="chanselector" type="range" name="slider' + i + '" rel="' + i + '" id="sliderv-' + i + '" value="0" min="0" max="255" step="5" /><div id="progressv' + i + '" class="progressv"><div class="progress_innerv"></div></div><div style="clear:both;"></div></div>');
+            }
+            loaded = true;
+        }
+        
+
+        if (window.orientation != 0) {
+            $('#sliders').hide();
+            $('#slidersv').show();
+            $('.ui-header').hide();
+        }
+
+        //$('#dummy').load('?update&channel='+5+'&value='+100);
+
+        //alert("done");
+        var refreshId = setInterval(function () {
+            if (ws != null && ws.readyState == 1)
+                ws.send('?status');
+        }, 5000);
+
+        values = new Array();
+        //values.length = 512;
+        for (var j = 0; j < 512; j++) {
+            values[j] = 0;
+        }
+        bank = 1;
+    });
+	
+	var values;
+	var bank;
+	var ws;
+	function connect(host) {
+	    ws = new WebSocket(host);
+	    ws.onopen = function () {
+	        //update icon...
+	        $('.connected').show();
+	        ws.send('?status');
+	        ws.send('?cues');
+	    };
+
+	    ws.onmessage = function (evt) {
+	        //handle received data...
+	        //get json
+	        var data = jQuery.parseJSON(evt.data);
+	        switch (data.command) {
+	            case 'update':
+	                updatevalues(data.channels);
+	                break;
+	            case 'status':
+	                $('#responsecontainer').html(data.html);
+	                break;
+	            case 'cues':
+	                //clear cuelist...
+	                $('#cuelist').children().not('[data-role="list-divider"]').remove('li');
+
+	                $.each(data.cues, function (i, v) {
+	                    $('#cuelist').children().last('li').after('<li data-theme="c"><a href="#" onclick="cue(' + i + ');">' + v + '</a></li>');
+	                });
+
+                    try
+                    {
+	                    $('#cuelist').listview('refresh');
+                    }
+                    catch(err) {}
+
+	                break;
+	        }
+	    };
+
+	    ws.onclose = function () {
+	        //update icon...
+	        $('.connected').hide();
+
+	        //alert('socket closed');
+	        //timeout and connect again...
+	        setTimeout(function () { connect('ws://'+system+':8282/events'); }, 5000);
+	    };
+	};
+
+	function cue(id) {
+	    ws.send('?cue&index=' + id);
+	}
+
+	function newcue() {
+	    if ($('input[name="cuename"]').val() != "") {
+	        ws.send('?newcue&name=' + $('input[name="cuename"]').val());
+	        $('input[name="cuename"]').val('');
+	    }
+	}
+
+	function updatevalues(data) {
+	    //update channel values
+	    for (var i = 0; i < data.length; i++) {
+	        values[i] = data[i];
+	    }
+
+	    var j = 0;
+	    for (var i = ((bank-1)*10); i <= (((bank-1)*10)+10); i++) {
+	        //bank
+	        $('#progress' + (j-1)).find('.progress_inner').width((data[i] / 255) * 100 + '%');
+	        j++;
+	    }
+
+	    j = 0;
+	    for (var i = ((bank - 1) * 10); i <= (((bank - 1) * 10) + 10); i++) {
+	        //bank
+	        $('#progressv' + (j - 1)).find('.progress_innerv').height((data[i] / 255) * 100 + '%');
+	        j++;
+	    }
+	    changebank(0);
+        
+	}
+
+	var changing = new Array();
+
+	//pageinit
+	$(document).ready(function (event) {
+	    //$(document).bind('pageinit', function (event) {
+
+
+	    if ('WebSocket' in window) {
+	        //replace this with the server name...
+	        connect('ws://%systemname%:8282/events');
+	    }
+
+	    $('.connected').hide();
+
+	    //channel update...
+	    $(".chanselector").bind("change", function (event, ui) {
+	        //do update....
+	        //alert('changed');
+	        var chan = parseInt($(this).attr('rel')) + ((bank - 1) * 10);
+	        var val = parseInt($(this).val());
+
+	        if (parseInt(values[parseInt(chan)]) != val) {
+	            //alert(parseInt(chan));
+	            values[parseInt(chan)] = parseInt(val);
+	            //$('#live'+$(this).attr('rel')+'').html(val);
+	            //alert(chan);
+	            //$('#dummy').load('?update&channel=' + (chan + 1) + '&value=' + val);
+
+	            //with new code:
+	            if (!dontupdate)
+	                ws.send('?update&channel=' + (chan + 1) + '&value=' + val);
+	        }
+	    });
+
+	    $(".chanselector").hide();
+	    $("#startval").hide();
+
+	    $("#startval").bind("change", function (event, ui) { //bank scroller
+	        dontupdate = true;
+	        //do update....
+	        //alert($(this).attr('rel'));
+	        bank = parseInt($(this).val());
+	        //alert(chan);
+	        //reset all the values to what they are in the array...
+	        for (i = 0; i < 10; i++) {
+	            var index = ((bank - 1) * 10) + i;
+	            //alert(index);
+	            var the = values[parseInt(index)];
+	            //alert(values[index]);
+	            $('[rel="' + (i - 1) + '"]').val(parseInt(the));
+	            $('[rel="' + (i - 1) + '"]').slider('refresh');
+	            $('#label' + i + '').html(((bank - 1) * 10) + i + 1);
+	            $('#labelv' + i + '').html(((bank - 1) * 10) + i + 1);
+	            //$('#live' + i + '').html(the);
+	            //alert("this function does not work!");
+	        }
+	        dontupdate = false;
+	    });
+
+	    $(window).bind('orientationchange', function (event, ui) {
+	        //orientation change event
+	        //alert("changed");
+	        if (event.orientation == 'landscape') {
+	            //$('.chanselector').attr('sliderOrientation', 'vertical').slider('refresh');
+	            $('#sliders').hide();
+	            $('#slidersv').show();
+	            $('.ui-header').hide();
+	        }
+	        else {
+	            //$('.chanselector').removeAttr('sliderOrientation').slider('refresh');
+	            $('#sliders').show();
+	            $('#slidersv').hide();
+	            $('.ui-header').show();
+	        }
+	    });
+
+	    $('input.deletable').wrap('<span class="deleteicon" />').after($('<span/>').click(function () {
+	        $(this).prev('input').val('');
+	    }));
+
+	    if ($(window).width() > $(window).height()) {
+	        $('#sliders').hide();
+	        $('#slidersv').show();
+	        $('.ui-header').hide();
+	    }
+	    else {
+	        $('#sliders').show();
+	        $('#slidersv').hide();
+	        $('.ui-header').show();
+	    }
+
+	});
+
+	var dontupdate = false;
+
+	function changebank(i) {
+	    dontupdate = true;
+
+		//alert(i);
+		var newn = bank + i;
+		//alert(newn);
+
+		bank = newn;
+
+		if (bank < 1)
+			bank = 1;
+			
+		if (bank > 51)
+		    bank = 51;
+
+		$("#startval").val(bank);
+		//$('#startval').slider('refresh');
+		//bank = parseInt($(this).val());
+			//alert(chan);
+			//reset all the values to what they are in the array...
+		for (i=0;i<10;i++)
+		{
+			var index = ((bank-1) * 10) + i;
+			//alert(index);
+			var the = values[parseInt(index)];
+			//alert(values[index]);
+			$('[rel="' + (i-1) + '"]').val(parseInt(the));
+			$('[rel="' + (i-1) + '"]').slider('refresh');
+			$('#label' + i + '').html(((bank - 1) * 10) + i + 1);
+			$('#labelv' + i + '').html(((bank - 1) * 10) + i + 1);
+			//$('#live' + i + '').html(the);
+			//$('#live'+i+'').html(the);
+
+        }
+
+
+        dontupdate = false;
+    }
+
+    function pad(num) {
+        //update number pad
+        $('#padnum').val($('#padnum').val() + "" + num);
+        if ($('#padnum').val().length > 3) {
+            $('#padnum').val(num);
+        }
+    }
+
+    function padon() {
+        if ($('#padnum').val() > 0 && $('#padnum').val() < 512) {
+            ws.send('?update&channel=' + $('#padnum').val() + '&value=255');
+            
+        }
+    }
+
+    function padoff() {
+        if ($('#padnum').val() > 0 && $('#padnum').val() < 512) {
+            ws.send('?update&channel=' + $('#padnum').val() + '&value=0');
+            
+        }
+    }
+
+        
+	</script>
+	<style type="text/css">
+	    .progress
+	    {
+	        height:5px;
+	        width:80%;
+	        border:1px solid silver;
+	        float:right;
+	        margin-right:8px;
+	    }
+	    
+	    .progress_inner
+	    {
+	        display:block;
+	        background:green;
+	        height:100%;
+	        width:0%;
+	    }
+	    
+	    .progressv
+	    {
+	        width:5px;
+	        height:200px;
+	        margin-top:5px;
+	        border:1px solid silver;
+	        float:right;
+	        position:relative;
+	    }
+	    
+	    .progress_innerv
+	    {
+	        display:block;
+	        background:green;
+	        width:100%;
+	        height:0%;
+            position:absolute;
+            bottom:0;
+	    }
+	    
+	    .connected
+	    {
+	        margin-top:5px;
+	        margin-left:5px;
+	    }
+	    
+	    span.deleteicon {
+            position: relative;
+        }
+        span.deleteicon span {
+            position: absolute;
+            display: block;
+            top: -15px;
+            right: 0px;
+            width: 48px;
+            height: 48px;
+            background: url('./template/images/cancel.png');
+            cursor: pointer;
+        }
+        span.deleteicon input {
+           
+        }
+	    
+	.download
+	{
+		background:url(./template/images/download.png) no-repeat;
+		background-position:left center;  
+		height:100px;
+		color:#B1FB17;
+		font-size:16pt;
+		padding-left:130px;
+		padding-top:20px;
+		float:left;
+		width:40%;
+		color:black;
+	}
+	legend
+	{
+		color:gray;
+		border-bottom:1px gray solid;
+		margin-top:15px;
+		margin-bottom:5px;
+		width:100%;
+	}
+	.faderl
+	{
+	 padding-top:10px;
+	 float:left;
+	 padding-right:10px;   
+	 width:5%;
+	}
+	.faderv
+	{
+	 padding-top:0px;
+	 text-align:center;
+	 padding-left:13px;
+	 display:block;
+	}
+	
+	.faderdiv
+	{
+	    height:40px;
+	}
+	
+	.faderdivv
+	{
+	    float:left;
+	    width:10%;
+	}
+	
+	.connected 
+	{
+	    float:left;
+	}
+	#padnum
+	{
+	    display:inline-block;
+	}
+	
+		label.ui-slider-horizontal label.ui-slider-vertical { display: block; }
+		
+div.ui-slider-horizontal { position: relative; display: inline-block; overflow: visible; height: 15px; padding: 0; margin: 0 2% 0 20px; top: 4px;width:80%; }
+
+a.ui-slider-handle-horizontal { position: absolute; z-index: 10;  top: 50%; width: 28px; height: 28px; margin-top: -15px; margin-left: -15px; }
+
+a.ui-slider-handle-horizontal a.ui-slider-handle-vertical .ui-btn-inner { padding-left: 0; padding-right: 0; }
+
+.min-width-480px label.ui-slider-horizontal { display: inline-block;  width: 20%;  margin: 0 2% 0 0; }
+
+.min-width-480px div.ui-slider-horizontal { width: 45%; }
+
+div.ui-slider-vertical, div.ui-slider-verticalInverted { position: relative; height:200px;  display: inline-block; overflow: visible; padding: 0; margin: 0 2% 0 20px; top: 4px; width:15px ; }
+
+label.ui-slider-vertical, label.ui-slider-verticalInverted { display: inline-block;  width: 20%;  margin: 0 2% 0 0; float:left; }
+
+div.ui-slider-vertical, div.ui-slider-verticalInverted { width: 15px; }
+
+a.ui-slider-handle-vertical, a.ui-slider-handle-verticalInverted { position: absolute; z-index: 10;  top: 50%; width: 28px; height: 28px; margin-top: -15px; margin-left: -8px; }
+
+.ui-btn-icon-notext .ui-btn-inner .ui-icon {margin:0; }
+
+</style>
+</head> 
+<body>
+
+<div data-role="page" class="type-home" id="control">
+<div data-role="header" data-id="header1">
+		<div class="connected"><img src="./template/images/connected.png" /></div>
+        <h1>Faders</h1>
+		<a href="#config" data-icon="gear" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Config</a>
+        <a href="#status" data-icon="info" data-rel="dialog" data-iconpos="notext" style="margin-right:35px;" class="ui-btn-right jqm-home">Status</a>
+		<div data-role="navbar">
+		<ul>
+			<li><a href="#control" data-theme="b" data-icon="star">Faders</a></li>
+            <li><a href="#pad"  data-icon="grid">Pad</a></li>
+            <li><a href="#cues"  data-icon="plus">Cues</a></li>
+		</ul>
+	</div>
+</div>
+
+	<div data-role="content" style="text-align:center;">
+		<div id="sliders">
+		</div>
+        <div id="slidersv" style="display:none;">
+		</div>
+        <div style="clear:both;width:100%;display:block;">&nbsp;</div>
+		<div style="clear:both;">
+		Bank Selector<br />
+		<input type="range" name="slider" id="startval" value="1" min="1" max="51" step="1" /><div style="clear:both;"></div>
+        <br />
+		<div data-role="controlgroup" data-type="horizontal">
+		<a href="#" data-role="button" data-theme="a" onclick="changebank(-1);" data-icon="arrow-l" data-inline="true">Lower</a>
+		<a onclick="changebank(1);" data-icon="arrow-r" data-theme="a" data-inline="true" data-role="button" data-iconpos="right" href="#" >Higher</a>
+		</div>
+		</div>
+	</div>
+	<div id="dummy" style="display:none;"></div>
+</div>    	
+</div>
+
+<div data-role="page" class="type-home" id="pad">
+<div data-role="header" data-id="header1">
+
+		<div class="connected"><img src="./template/images/connected.png" /></div>
+		<h1>Number Pad</h1>
+		<a href="#config" data-icon="gear" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Config</a>
+        <a href="#status" data-icon="info" data-rel="dialog" data-iconpos="notext" style="margin-right:35px;" class="ui-btn-right jqm-home">Status</a>
+		<div data-role="navbar">
+		<ul>
+			<li><a href="#control" data-icon="star">Faders</a></li>
+            <li><a href="#pad" data-theme="b" data-icon="grid">Pad</a></li>
+            <li><a href="#cues"  data-icon="plus">Cues</a></li>
+		</ul>
+	</div>
+	</div>
+	<div data-role="content" style="text-align:center;">
+    <input type="text" id="padnum" class="deletable" disabled style="text-align:center;font-size:larger;width:50%"/>
+    <div data-type="horizontal" align="center">
+    <div>
+                <input onclick="pad(1)" data-inline="true" data-corners="false" type="button" value="1">
+                <input onclick="pad(2)" data-inline="true" data-corners="false" type="button" value="2">
+                <input onclick="pad(3)" data-inline="true" data-corners="false" type="button" value="3">
+    </div>
+    <div>
+                <input onclick="pad(4)" data-inline="true" data-corners="false" type="button" value="4">
+                <input onclick="pad(5)" data-inline="true" data-corners="false" type="button" value="5">
+                <input onclick="pad(6)" data-inline="true" data-corners="false" type="button" value="6">
+    </div>
+    <div>
+                <input onclick="pad(7)" data-inline="true" data-corners="false" type="button" value="7">
+                <input onclick="pad(8)" data-inline="true" data-corners="false" type="button" value="8">
+                <input onclick="pad(9)" data-inline="true" data-corners="false" type="button" value="9">
+    </div>
+                <input onclick="padoff()" data-inline="true" data-corners="false" type="button" value="OFF">
+                <input onclick="pad(0)" data-inline="true" data-corners="false" type="button" value="0">
+                <input onclick="padon()" data-inline="true" data-corners="false" type="button" value="&nbsp;ON&nbsp;">
+            </div>
+	</div>
+	<div id="Div3" style="display:none;"></div>
+</div>
+
+<div data-role="page" class="type-home" id="cues">
+<div data-role="header" data-id="header1">
+
+		<div class="connected"><img src="./template/images/connected.png" /></div>
+		<h1>Cue List</h1>
+		<a href="#config" data-icon="gear" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Config</a>
+        <a href="#status" data-icon="info" data-rel="dialog" data-iconpos="notext" style="margin-right:35px;" class="ui-btn-right jqm-home">Status</a>
+		<div data-role="navbar">
+		<ul>
+			<li><a href="#control" data-icon="star">Faders</a></li>
+            <li><a href="#pad"  data-icon="grid">Pad</a></li>
+            <li><a href="#cues" data-theme="b"  data-icon="plus">Cues</a></li>
+		</ul>
+	</div>
+	</div>
+	<div data-role="content">
+		
+        
+        <ul data-role="listview" data-theme="b" id="cuelist" data-inset="true">
+        <li data-role="list-divider">Saved Cues</li>
+        </ul>
+
+        <a href="#newcue" data-role="button" data-rel="dialog">Create Cue</a>
+	</div>
+	<div id="Div4" style="display:none;"></div>
+</div>
+
+<div data-role="page" class="type-home" id="config">
+<div data-role="header" data-id="header1">
+
+		<div class="connected"><img src="./template/images/connected.png" /></div>
+		<h1>Configuration</h1>
+		<a href="#config" data-icon="gear" data-iconpos="notext" data-direction="reverse" data-theme="b" class="ui-btn-right jqm-home">Config</a>
+        <a href="#status" data-icon="info" data-rel="dialog" data-iconpos="notext" style="margin-right:35px;" class="ui-btn-right jqm-home">Status</a>
+		<div data-role="navbar">
+		<ul>
+			<li><a href="#control"  data-icon="star">Faders</a></li>
+            <li><a href="#pad"  data-icon="grid">Pad</a></li>
+            <li><a href="#cues"  data-icon="plus">Cues</a></li>
+		</ul>
+	</div>
+	</div>
+	<div data-role="content">
+		
+            <h2>Software</h2>
+            <a href="/apps/vb/setup.exe" rel="external"><div class="download">Venue Builder<br /><i>Windows</i></div></a>
+			<a href="/apps/android.apk" rel="external"><div class="download">Rigging Remote<br /><i>Android</i></div></a>
+           
+			<div style="clear:both"></div>
+			
+			<!--<h2>Access Control</h2>
+			System Name: <b>%systemname%</b><br><br>
+			<form method="GET">
+			Access Allowed List: <input type="text" name="accesslist" value="%accesslist%" /><br>
+			<input type="submit" value="Update Settings" />
+			<input type="hidden" name ="access" value="access"/>
+			</form>-->
+		
+			<!--<h2>DMX Settings</h2>
+			<form method="GET">
+			<input type="checkbox" name="virtual" id="virtual" value="TRUE" %virtchecked%/><label for="virtual">Virtual DMX</label><br>
+			COM Port: <input type="text" name="port" value="%dmxport%" /><br>
+			<input type="submit" value="Update Settings" />
+			<input type="hidden" name ="dmx" value="dmx"/>
+			</form>-->
+
+			<!--<h2>Maintainance</h2>
+			<form action="/?restart" method="POST">
+			<input type="submit" value="RESTART SYSTEM" />
+			</form>-->
+
+			<h2>Venue Setup</h2>
+			<form action="/?venue" method="POST" enctype="multipart/form-data">
+			<input type="file" name="myfile" />
+			<input type="submit" value="Upload" />
+			</form> 
+
+			<!--<h2>Password</h2>
+			<form action="/?password" method="GET">
+			<input type="password" name="password" />
+			<input type="submit" value="Change Password" />
+			</form> -->
+	</div>
+</div>
+
+<div data-role="page" id="status">
+<div data-role="header">
+		<h1>Server Status</h1>		
+	</div>
+	<div data-role="content">
+	<div id="responsecontainer">
+    
+    </div>	
+</div>
+</div>
+
+<div data-role="page" id="newcue">
+<div data-role="header">
+		<h1>New Cue Name</h1>		
+	</div>
+	<div data-role="content">
+	<div id="Div2">
+    <input type="text" name="cuename" />
+    <a href="#" data-role="button" data-rel="back" onclick="newcue()">Add</a>
+    </div>	
+</div>
+</div>
+</body>
+</html>
