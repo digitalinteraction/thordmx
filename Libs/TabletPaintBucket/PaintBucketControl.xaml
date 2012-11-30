@@ -1,0 +1,11 @@
+﻿<UserControl x:Class="PaintBucket.PaintBucketControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:s="http://schemas.microsoft.com/surface/2008"
+    xmlns:me="clr-namespace:PaintBucket">
+    <Grid Background="#ff333333">
+        
+        <me:FingerPainting  x:Name="finger" ></me:FingerPainting>
+        <Ellipse Fill="Transparent" PreviewMouseDown="Ellipse_PreviewMouseDown" PreviewMouseMove="Ellipse_PreviewMouseMove" PreviewMouseUp="Ellipse_PreviewMouseUp" PreviewTouchDown="FingerPainting_ContactDown" PreviewTouchMove="FingerPainting_ContactChanged" PreviewTouchUp="FingerPainting_ContactUp" ></Ellipse>
+    </Grid>
+</UserControl>

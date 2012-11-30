@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="IPS.VenueBuilder.Lamp"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             Width="50" Height="50" MouseLeftButtonUp="UserControl_PreviewMouseLeftButtonDown">
+    <Grid>
+        <Ellipse Width="60" Height="60" Name="ellipse" Margin="-5,-5" Opacity="0.7">
+            <Ellipse.Effect>
+                <BlurEffect Radius="10"></BlurEffect>
+            </Ellipse.Effect>
+        </Ellipse>
+        <Image Margin="5" Source="/NUILight.VenueBuilder;component/lamp1.png"></Image>
+        <Label Name="label1" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" Margin="0,0,0,-14" FontWeight="Bold">
+            <Label.Effect>
+                <DropShadowEffect BlurRadius="8" Color="White" ShadowDepth="0"></DropShadowEffect>
+            </Label.Effect>
+            
+            </Label>
+    </Grid>
+</UserControl>
