@@ -49,8 +49,8 @@
 
         //alert("done");
         var refreshId = setInterval(function () {
-            if (ws != null && ws.readyState == 1)
-                ws.send('?status');
+            if (wscontrol != null && wscontrol.readyState == 1)
+                wscontrol.send('?status');
         }, 5000);
 
         values = new Array();
@@ -63,17 +63,36 @@
 	
 	var values;
 	var bank;
-	var ws;
+	var wscontrol;
+	var wsoutput;
+	var wsinput;
+
 	function connect(host) {
-	    ws = new WebSocket(host);
-	    ws.onopen = function () {
+	    wscontrol = new WebSocket(host+":8282/events");
+	    wscontrol.onopen = function () {
 	        //update icon...
 	        $('.connected').show();
-	        ws.send('?status');
-	        ws.send('?cues');
+	        wscontrol.send('?status');
+	        wscontrol.send('?cues');
 	    };
 
-	    ws.onmessage = function (evt) {
+	    //transmitter
+	    wsoutput = new WebSocket(host + ":8283/events");
+
+	    //reciever
+	    wsinput = new WebSocket(host + ":8284/events");
+        wsinput.onmessage = function (evt) {
+	        //handle received data...
+	        //get json
+	        var data = jQuery.parseJSON(evt.data);
+	        switch (data.command) {
+	            case 'update':
+	                updatevalues(data.channels);
+	                break;
+			}
+        };
+
+	    wscontrol.onmessage = function (evt) {
 	        //handle received data...
 	        //get json
 	        var data = jQuery.parseJSON(evt.data);
@@ -102,23 +121,23 @@
 	        }
 	    };
 
-	    ws.onclose = function () {
+	    wscontrol.onclose = function () {
 	        //update icon...
 	        $('.connected').hide();
 
 	        //alert('socket closed');
 	        //timeout and connect again...
-	        setTimeout(function () { connect('ws://'+system+':8282/events'); }, 5000);
+	        setTimeout(function () { connect('ws://'+system); }, 5000);
 	    };
 	};
 
 	function cue(id) {
-	    ws.send('?cue&index=' + id);
+	    wscontrol.send('?cue&index=' + id);
 	}
 
 	function newcue() {
 	    if ($('input[name="cuename"]').val() != "") {
-	        ws.send('?newcue&name=' + $('input[name="cuename"]').val());
+	        wscontrol.send('?newcue&name=' + $('input[name="cuename"]').val());
 	        $('input[name="cuename"]').val('');
 	    }
 	}
@@ -155,7 +174,7 @@
 
 	    if ('WebSocket' in window) {
 	        //replace this with the server name...
-	        connect('ws://%systemname%:8282/events');
+	        connect('ws://%systemname%');
 	    }
 
 	    $('.connected').hide();
@@ -176,7 +195,7 @@
 
 	            //with new code:
 	            if (!dontupdate)
-	                ws.send('?update&channel=' + (chan + 1) + '&value=' + val);
+	                wsoutput.send('?update&channel=' + (chan + 1) + '&value=' + val);
 	        }
 	    });
 
@@ -290,14 +309,14 @@
 
     function padon() {
         if ($('#padnum').val() > 0 && $('#padnum').val() < 512) {
-            ws.send('?update&channel=' + $('#padnum').val() + '&value=255');
+            wsoutput.send('?update&channel=' + $('#padnum').val() + '&value=255');
             
         }
     }
 
     function padoff() {
         if ($('#padnum').val() > 0 && $('#padnum').val() < 512) {
-            ws.send('?update&channel=' + $('#padnum').val() + '&value=0');
+            wsoutput.send('?update&channel=' + $('#padnum').val() + '&value=0');
             
         }
     }

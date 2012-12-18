@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="c1952552-df27-4332-234d-12c71167b43f" Name="IPS" Language="1033" Version="1.0.0.0" Manufacturer="Newcastle University" UpgradeCode="3709f8aa-0c54-42f6-2345-f9aeb6d2ff53">
+  <Product Id="c1952552-df27-4332-234d-12c71167b43f" Name="Interaction Production Server" Language="1033" Version="1.0.0.0" Manufacturer="Newcastle University" UpgradeCode="3709f8aa-0c54-42f6-2345-f9aeb6d2ff53">
     <Package InstallerVersion="200" Compressed="yes" />
 
     <Icon Id="icon.ico" SourceFile="icon.ico" />
@@ -9,6 +9,7 @@
 
     <WixVariable Id="WixUIBannerBmp" Value="small.bmp" />
     <WixVariable Id="WixUIDialogBmp" Value="big.bmp" />
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
 
     <PropertyRef Id="NETFRAMEWORK40FULL" />
 
@@ -20,7 +21,7 @@
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
-        <Directory Id="exhibitforgedir" Name="IPS">
+        <Directory Id="exhibitforgedir" Name="Interaction Production Server">
           <Directory Id="INSTALLLOCATION1" Name="Server">
 
           </Directory>
@@ -34,7 +35,7 @@
       </Directory>
 
       <Directory Id="ProgramMenuFolder">
-        <Directory Id="ApplicationProgramsFolder" Name="IPS"/>
+        <Directory Id="ApplicationProgramsFolder" Name="Interaction Production Server"/>
       </Directory>
     </Directory>
 
@@ -45,8 +46,15 @@
                   Description="Interaction Production Control Server"
                   Target="[INSTALLLOCATION1]IPSServer.exe"
                   WorkingDirectory="INSTALLLOCATION1"/>
+        
+        <Shortcut Id="ApplicationStartMenuShortcut3"
+                 Name="IPS Server (AutoStart)"
+                 Description="Interaction Production Control Server (AutoStart)"
+                 Target="[INSTALLLOCATION1]IPSServer.exe"
+                 Arguments="-s"
+                 WorkingDirectory="INSTALLLOCATION1"/>
+        
         <RegistryValue Root="HKCU" Key="Software\Microsoft\IPSServer" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
-        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
       </Component>
 
       <Component Id="ApplicationShortcut2" Guid="c1952552-df27-4332-234d-12c71167b434">
@@ -58,6 +66,7 @@
                   WorkingDirectory="INSTALLLOCATION2"/>
 
         <RegistryValue Root="HKCU" Key="Software\Microsoft\IPSBuilder" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
       </Component>
 
       <!--<Component Id="ApplicationShortcut3" Guid="c1952552-df27-4332-234d-12c71167b43d">
@@ -76,6 +85,8 @@
       <ComponentGroupRef Id="IPS_Server.Binaries" />
       <ComponentGroupRef Id="IPS_Server.Content" />
       <ComponentGroupRef Id="IPS_Server.Satellites" />
+      <ComponentGroupRef Id="IPS_Communication.Binaries" />
+      <ComponentGroupRef Id="IPS_Shared_Objects.Binaries" />
       <ComponentRef Id="ApplicationShortcut1" />
     </Feature>
 
@@ -83,6 +94,7 @@
       <ComponentGroupRef Id="IPS_Venue_Builder.Binaries" />
       <ComponentGroupRef Id="IPS_Venue_Builder.Content" />
       <ComponentGroupRef Id="IPS_Venue_Builder.Satellites" />
+      <ComponentGroupRef Id="IPS_Controller.Binaries" />
       <ComponentRef Id="ApplicationShortcut2" />
     </Feature>
 

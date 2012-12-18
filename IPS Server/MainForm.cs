@@ -17,13 +17,18 @@ using IPS.Communication;
 using IPS.SharedObjects;
 using Messir.Windows.Forms;
 using CommandLine;
-using MiniHttpd.FileSystem;
+using log4net.Core;
+using log4net.Config;
+using log4net.Appender;
+using log4net;
 
 namespace IPS.Server
 {
     public partial class MainForm : Form
     {
-        
+
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         [Option("l", "port (lcd)", Required = false, HelpText = "LCD Serial Port")]
         public string LoadedLCDPort { get; set; }
         [Option("s", "start", Required = false, HelpText = "Start Server")]
@@ -44,11 +49,63 @@ namespace IPS.Server
             get;
             set;
         }
+        List<Level> labels = new List<Level>();
+        private Thread logWatcher;
+        private bool logWatching = true;
+        private log4net.Appender.MemoryAppender logger;
+
+        private void LogWatcher()
+        {
+            // we loop until the Form is closed  
+            while (logWatching)
+            {
+                LoggingEvent[] events = logger.GetEvents();
+                if (events != null && events.Length > 0)
+                {
+                    // if there are events, we clear them from the logger,  
+                    // since we're done with them  
+                    logger.Clear();
+                    foreach (LoggingEvent ev in events)
+                    {
+                        string line = ev.RenderedMessage;
+                        this.BeginInvoke(new Action<string>((s) =>
+                        {
+                            // the line we want to log  
+
+                            // don't want to grow this log indefinetly, so limit to 100 lines  
+                            if (status.Items.Count > 99)
+                            {
+                                status.Items.RemoveAt(status.Items.Count);
+                            }
+                            status.Items.Insert(0, s);
+                            status.ForeColor = Color.Black;
+                            if (ev.Level == log4net.Core.Level.Error)
+                                status.ForeColor = Color.Red;
+                            if (ev.Level == log4net.Core.Level.Info)
+                                status.ForeColor = Color.Green;
+                        }), line);
+                    }
+                }
+                // nap for a while, don't need the events on the millisecond.  
+                Thread.Sleep(500);
+            }
+        }  
 
         public MainForm(string[] args)
         {
             InitializeComponent();
+            log4net.Config.XmlConfigurator.Configure();
 
+            logger = new MemoryAppender();
+            var repository = (log4net.Repository.Hierarchy.Hierarchy)LogManager.GetRepository();
+            repository.Root.AddAppender(logger);
+            //var events = memoryAppender.GetEvents();
+
+            //logger = new log4net.Appender.MemoryAppender();
+            //log4net.Config.BasicConfigurator.Configure(logger);
+            
+
+            log.Info("Starting...");
 
             ICommandLineParser parser = new CommandLineParser();
             if (parser.ParseArguments(args, this))
@@ -101,35 +158,61 @@ namespace IPS.Server
             server.Start();
 
             int num = 1;
-            for (int j = 0; j < 51; j++)
+            for (int j = 0; j < 512; j++)
             {
                 //add lables
-                for (int i = 0; i < 10; i++)
-                {
-                    Label l1 = new Label();
-                    flowLayoutPanel1.Controls.Add(l1);
-                    l1.Width = 25;
-                    l1.TextAlign = ContentAlignment.TopCenter;
-                    l1.ForeColor = Color.Silver;
-                    l1.Text = "" + num;
-                    num++;
-                }
+                //for (int i = 0; i < 10; i++)
+                //{
+                //    Label l1 = new Label();
+                //    flowLayoutPanel1.Controls.Add(l1);
+                //    l1.Width = 25;
+                //    l1.TextAlign = ContentAlignment.TopCenter;
+                //    l1.ForeColor = Color.Silver;
+                //    l1.Text = "" + num;
+                //    num++;
+                //}
 
-                for (int i = 0; i < 10; i++)
+                //for (int i = 0; i < 10; i++)
+                //{
+                //    Label l = new Label();
+                //    flowLayoutPanel1.Controls.Add(l);
+                //    l.Width = 25;
+                //    l.Padding = new Padding(0);
+
+                //    l.TextAlign = ContentAlignment.TopCenter;
+                //    l.Text = "0";
+                //    labels.Add(l);
+                //}
+
+                //for (int i = 0; i < 10; i++)
                 {
-                    Label l = new Label();
+                    Level l = new Level();
                     flowLayoutPanel1.Controls.Add(l);
                     l.Width = 25;
                     l.Padding = new Padding(0);
-
-                    l.TextAlign = ContentAlignment.TopCenter;
-                    l.Text = "0";
+                    l.Height = 50;
+                    l.Channel = num;
+                    //l.Value = num;
+                    //l.TextAlign = ContentAlignment.TopCenter;
+                    //l.Text = "0";
                     labels.Add(l);
+                    num++;
                 }
             }
 
+            
+
             //start Admin Server
-            WebInterface web = new WebInterface(this);
+            try
+            {
+                WebInterface web = new WebInterface(this);
+            }
+            catch (Exception e)
+            {
+                log.Error(e.Message);
+                //status.Items.Insert(0, e.Message);
+                //status.ForeColor = Color.Red;
+            }
 
             if (!IsRunningOnMono())
             {
@@ -163,7 +246,7 @@ namespace IPS.Server
 
 
             Load += new EventHandler(Form1_Load);
-
+            
             //if args is set...
 
 
@@ -181,6 +264,8 @@ namespace IPS.Server
 
         void Form1_Load(object sender, EventArgs e)
         {
+            logWatcher = new Thread(new ThreadStart(LogWatcher));
+            logWatcher.Start();
             if (LoadedStart)
             {
                 try
@@ -190,9 +275,9 @@ namespace IPS.Server
                 }
                 catch (Exception ex)
                 {
-
-                    status.Items.Insert(0, ex.Message);
-                    status.ForeColor = Color.Red;
+                    log.Error(ex.Message);
+                    //status.Items.Insert(0, ex.Message);
+                    //status.ForeColor = Color.Red;
                 }
             }
 
@@ -204,9 +289,9 @@ namespace IPS.Server
                 }
                 catch (Exception ex)
                 {
-
-                    status.Items.Insert(0, ex.Message);
-                    status.ForeColor = Color.Red;
+                    log.Error(ex.Message);
+                    //status.Items.Insert(0, ex.Message);
+                    //status.ForeColor = Color.Red;
 
                 }
             }
@@ -282,13 +367,16 @@ namespace IPS.Server
             if (lcd != null)
                 lcd.ErrorScreen();
 
-            StreamWriter str = new StreamWriter(Directory.GetCurrentDirectory() + "\\log.txt",true);
-            str.WriteLine(((Exception)(e.ExceptionObject)).Source + ((Exception)(e.ExceptionObject)).StackTrace + ((Exception)(e.ExceptionObject)).Message);
-            str.Close();
+            //StreamWriter str = new StreamWriter(Directory.GetCurrentDirectory() + "\\log.txt",true);
+            //str.WriteLine(DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongDateString((Exception)(e.ExceptionObject)).Source + ((Exception)(e.ExceptionObject)).StackTrace + ((Exception)(e.ExceptionObject)).Message);
+            //str.Close();
+
+            log.Fatal("Fatal Error", e.ExceptionObject as Exception);
+
             Environment.Exit(0);
         }
 
-        List<Label> labels = new List<Label>();
+        
 
         int port = 1234;
         List<string> devices = new List<string>();
@@ -301,9 +389,9 @@ namespace IPS.Server
                 IsRunning = true;
                 //osc.ValidDevices.AddRange(devices.ToList());
                 osc.ValidDevices.Add("*");
-                status.Items.Insert(0, "Connected && Receiving Events");
+                log.Info("Connected && Receiving Events");
                 
-                status.ForeColor = Color.Green;
+                //status.ForeColor = Color.Green;
                 textBox1.Enabled = false;
                 //comports.Enabled = false;
                 button1.Hide();
@@ -323,11 +411,13 @@ namespace IPS.Server
             catch (Exception ex)
             {
                 //MessageBox.Show(ex.Message);
-                status.BeginInvoke(new Action(() =>
-                {
-                    status.Items.Insert(0,ex.Message);
-                    status.ForeColor = Color.Red;
-                }));
+                log.Error(ex.Message);
+
+                //status.BeginInvoke(new Action(() =>
+                //{
+                    //status.Items.Insert(0,ex.Message);
+                    //status.ForeColor = Color.Red;
+                //}));
                 
             }
         }
@@ -340,8 +430,9 @@ namespace IPS.Server
             }
             catch (Exception ex)
             {
-                status.Items.Insert(0,ex.Message);
-                status.ForeColor = Color.Red;
+                log.Error(ex.Message);
+                //status.Items.Insert(0,ex.Message);
+                //status.ForeColor = Color.Red;
 
                 propertygrid.Enabled = false;
             }
@@ -367,7 +458,7 @@ namespace IPS.Server
                         {
                             if (labels.Count >= i && ChannelValues[i] != lastupdate[i])
                             {
-                                labels[i - 1].Text = "" + lastupdate[i];
+                                labels[i - 1].Value = lastupdate[i];
                             }
                             ChannelValues[i] = lastupdate[i];
                         }
@@ -456,14 +547,16 @@ namespace IPS.Server
             }
             catch
             {
-                status.Items.Insert(0,"Invalid devices!");
-                status.ForeColor = Color.Red;
+                log.Error("Invalid devices!");
+                //status.Items.Insert(0,"Invalid devices!");
+                //status.ForeColor = Color.Red;
             }
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-
+            logWatching = false;
+            logWatcher.Join();  
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -645,8 +738,9 @@ namespace IPS.Server
                     }
                     catch
                     {
-                        status.Items.Insert(0, "Problem loading venue file!");
-                        status.ForeColor = Color.Red;
+                        log.Error("Problem loading venue file!");
+                        //status.Items.Insert(0, "Problem loading venue file!");
+                        //status.ForeColor = Color.Red;
                     }
                 }
             }
@@ -666,7 +760,8 @@ namespace IPS.Server
             //stop server
             IsRunning = false;
             //osc.ValidDevices.AddRange(devices.ToList());
-            status.Items.Insert(0, "Server Stopped");
+            log.Info("Server Stopped");
+            //status.Items.Insert(0, "Server Stopped");
             textBox1.Enabled = true;
             propertygrid.Enabled = true;
             //comports.Enabled = false;
@@ -674,6 +769,7 @@ namespace IPS.Server
             DmxController.Stop();
             button1.Show();
             button2.Hide();
+
         }
     }
 }

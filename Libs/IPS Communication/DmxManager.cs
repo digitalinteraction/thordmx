@@ -106,7 +106,7 @@ namespace IPS.Communication
             s1.Publish();
             Services.Add(s1);
 
-            var s2 = new NetService("", "_http._tcp", "NUILightServer - WebSockets DMX Status", 8282);
+            var s2 = new NetService("", "_http._tcp", "NUILightServer - WebSockets Server Control", 8282);
             s2.Publish();
             Services.Add(s2);
         }
@@ -413,11 +413,14 @@ namespace IPS.Communication
 
         private void fireStatus()
         {
-            if (OnReceive != null && dmxoutputs.Count > 0)
+            if (dmxoutputs.Count > 0)
             {
-                 OnReceive(dmxoutputs.First().GetChannelData());//to gui / webui
+                if (OnReceive != null)
+                {
+                    OnReceive(dmxoutputs.First().GetChannelData());//to gui / webui
+                }
+                currentoutput = dmxoutputs.First().GetChannelData();
             }
-            currentoutput = dmxoutputs.First().GetChannelData();
         }
 
         public void Close()

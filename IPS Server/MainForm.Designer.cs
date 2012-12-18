@@ -109,7 +109,7 @@
             this.status.FormattingEnabled = true;
             this.status.Location = new System.Drawing.Point(9, 16);
             this.status.Name = "status";
-            this.status.Size = new System.Drawing.Size(325, 134);
+            this.status.Size = new System.Drawing.Size(325, 82);
             this.status.TabIndex = 1;
             // 
             // groupBox3

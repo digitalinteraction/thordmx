@@ -204,7 +204,8 @@ namespace IPS.Communication.Plugins
 
         ~ZeroMQEventClient()
         {
-            server.Close();
+            if (server != null)
+                server.Close();
         }
 
 
