@@ -249,7 +249,11 @@ namespace IPS.Communication.Plugins
 
         private void close_serial_port()
         {
-	        ser.Close();
+            try
+            {
+                ser.Close();
+            }
+            catch { }
         }
 
         private void flush_rx()

@@ -6,7 +6,7 @@
     <ProductVersion>3.5</ProductVersion>
     <ProjectGuid>{a5b34c74-2482-45b5-92be-0bf3bc721ea1}</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>NUILightInstaller</OutputName>
+    <OutputName>IPSInstaller</OutputName>
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
@@ -28,6 +28,33 @@
     <ProjectReference Include="..\..\IPS Server\IPS Server.csproj">
       <Name>IPS Server</Name>
       <Project>{35f2e90b-c1cd-4351-b65e-f908674e4a8c}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>
+      </DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLLOCATION1</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libs\IPS Communication\IPS Communication.csproj">
+      <Name>IPS Communication</Name>
+      <Project>{9f2fe6fb-090e-40a7-bb2c-655e5785d219}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>
+      </DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLLOCATION1</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libs\IPS Controller\IPS Controller.csproj">
+      <Name>IPS Controller</Name>
+      <Project>{967d216d-bdaf-4547-979e-00abb35b7b5c}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>
+      </DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLLOCATION2</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libs\IPS Shared Objects\IPS Shared Objects.csproj">
+      <Name>IPS Shared Objects</Name>
+      <Project>{033db415-f565-45e1-a65c-3bd15ffb63fb}</Project>
       <Private>True</Private>
       <DoNotHarvest>
       </DoNotHarvest>
@@ -57,6 +84,7 @@
   <ItemGroup>
     <Content Include="big.bmp" />
     <Content Include="icon.ico" />
+    <Content Include="License.rtf" />
     <Content Include="small.bmp" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />

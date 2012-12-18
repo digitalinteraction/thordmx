@@ -17,31 +17,39 @@ namespace IPS.SharedObjects
         {
             Layouts = new ObservableCollection<Rig>();
             //load in all venues from files found in the dir...
-            string[] files = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\www", "*.thor");
-            foreach (string f in files)
+            if (Directory.Exists(Directory.GetCurrentDirectory() + "\\www"))
             {
-                if (!f.EndsWith("\\venue.thor") && !f.Contains("layout_layout"))
+                string[] files = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\www", "*.thor");
+                foreach (string f in files)
                 {
-                    //load and parse...
-                    try
+                    if (!f.EndsWith("\\venue.thor") && !f.Contains("layout_layout"))
                     {
-                        Layouts.Add(LoadFromFile(f));
-                    }
-                    catch
-                    {
+                        //load and parse...
+                        try
+                        {
+                            Layouts.Add(LoadFromFile(f));
+                        }
+                        catch
+                        {
+                        }
                     }
                 }
-            }
-            if (File.Exists(Directory.GetCurrentDirectory() + "\\www\\venue.thor"))
-            {
-
-                CurrentVenue = LoadFromFile(Directory.GetCurrentDirectory() + "\\www\\venue.thor");
-            }
-            else
-            {
-                if (Layouts.Count > 0 && CurrentVenue == null)
+                if (File.Exists(Directory.GetCurrentDirectory() + "\\www\\venue.thor"))
                 {
-                    MakeCurrent(Layouts.First());
+
+                    try
+                    {
+                        CurrentVenue = LoadFromFile(Directory.GetCurrentDirectory() + "\\www\\venue.thor");
+
+                    }
+                    catch { }
+                }
+                else
+                {
+                    if (Layouts.Count > 0 && CurrentVenue == null)
+                    {
+                        MakeCurrent(Layouts.First());
+                    }
                 }
             }
         }
@@ -61,10 +69,14 @@ namespace IPS.SharedObjects
         {
             FileInfo fi = new FileInfo(f);
             File.Copy(f,Directory.GetCurrentDirectory() + "\\www\\layout_" + fi.Name,true);
-            var r = LoadFromFile(Directory.GetCurrentDirectory() + "\\www\\layout_" + fi.Name);
-            Layouts.Add(r);
-            //make current
-            MakeCurrent(r);
+            try
+            {
+                var r = LoadFromFile(Directory.GetCurrentDirectory() + "\\www\\layout_" + fi.Name);
+                Layouts.Add(r);
+                //make current
+                MakeCurrent(r);
+            }
+            catch { }
         }
 
         public Rig CurrentVenue { get; set; }

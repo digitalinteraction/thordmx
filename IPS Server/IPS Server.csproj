@@ -12,7 +12,7 @@
     <AssemblyName>IPSServer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ApplicationIcon>1267737361_Cydia.ico</ApplicationIcon>
+    <ApplicationIcon>icon1.ico</ApplicationIcon>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -72,6 +72,13 @@
     <Reference Include="JsonExSerializer">
       <HintPath>..\Dependencies\JsonExSerializer.dll</HintPath>
     </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="MiniHttpd, Version=1.2.0.18631, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\MiniHttpd.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -94,6 +101,12 @@
     <Compile Include="DriveDetector.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Level.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Level.Designer.cs">
+      <DependentUpon>Level.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -104,6 +117,80 @@
     <Compile Include="LCDDriver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="..\Dependencies\dnssd.dll">
+      <Link>dnssd.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="icon1.ico" />
+    <Content Include="..\Dependencies\JsonExSerializer.dll">
+      <Link>JsonExSerializer.dll</Link>
+    </Content>
+    <Content Include="..\Dependencies\libcmdline\bin\Release\CommandLine.dll">
+      <Link>CommandLine.dll</Link>
+    </Content>
+    <Content Include="..\Dependencies\MiniHttpd.dll">
+      <Link>MiniHttpd.dll</Link>
+    </Content>
+    <Content Include="..\Dependencies\TabControl\bin\x86\Release\TabStrips.dll">
+      <Link>TabStrips.dll</Link>
+    </Content>
+    <Content Include="..\packages\Alchemy.2.2.1\lib\net40\Alchemy.dll">
+      <Link>Alchemy.dll</Link>
+    </Content>
+    <Content Include="..\packages\ICSharpCode.SharpZipLib.dll.0.85.4.369\lib\net20\ICSharpCode.SharpZipLib.dll">
+      <Link>ICSharpCode.SharpZipLib.dll</Link>
+    </Content>
+    <Content Include="..\packages\ZeroconfService.0.6.0.0\lib\net40\ZeroconfService.dll">
+      <Link>ZeroconfService.dll</Link>
+    </Content>
+    <Content Include="Plugins\CommandLine.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\dnssd.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\IPS.Communication.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\IPS.Controller.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\IPS.Plugins.EnttecDMX.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\IPS.Plugins.OpenDMX.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\IPS.Plugins.Osc.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\IPS.Plugins.UDPBroadcast.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\IPS.Plugins.VirtualDMX.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\IPS.Plugins.WebSockets.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\IPS.Plugins.ZeroMQClient.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\JsonExSerializer.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\libzmq.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ZeroconfService.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ZeroconfService.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ZMQLib.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="www\admin\apps\vb\runme.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -125,15 +212,12 @@
     <Content Include="www\admin\template\jquery.mobile-1.1.1.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="www\admin\template\jquery.mobile-1.2.0.min.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="www\admin\template\jquery.mobile-1.2.0.min.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="www\admin\template\verticalSlider.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Level.resx">
+      <DependentUpon>Level.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -161,7 +245,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="WebInterface.cs" />
-    <Content Include="todo.txt" />
+    <None Include="todo.txt" />
     <Content Include="www\admin\apps\android.apk">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -219,7 +303,6 @@
     <None Include="www\venue.thor" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="1267737361_Cydia.ico" />
     <Content Include="www\admin\index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -250,16 +333,7 @@
     <Content Include="www\admin\template\images\phonesplash.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="www\admin\template\jq.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="www\admin\template\jquery.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="www\admin\template\jquery.mobile-1.0.1.min.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="www\admin\template\jquery.mobile-1.0.1.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -267,10 +341,6 @@
     <ProjectReference Include="..\Dependencies\libcmdline\CommandLine.csproj">
       <Project>{5DEA2811-2FFA-4959-830B-CAD3ACACABEB}</Project>
       <Name>CommandLine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dependencies\MiniHttpd\MiniHttpd.csproj">
-      <Project>{AE8B039C-8ADA-4E63-834D-E698B716AC05}</Project>
-      <Name>MiniHttpd</Name>
     </ProjectReference>
     <ProjectReference Include="..\Dependencies\TabControl\TabStrips.csproj">
       <Project>{F0191B50-7A1B-418A-BE4A-AF640B07F279}</Project>
@@ -285,6 +355,7 @@
       <Name>IPS Shared Objects</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

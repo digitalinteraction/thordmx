@@ -10,7 +10,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 using Alchemy.Classes;
 using System.Web;
 using IPS.SharedObjects;
-using MiniHttpd.FileSystem;
 using IPS.Communication;
 
 namespace IPS.Server
@@ -132,8 +131,8 @@ namespace IPS.Server
             server = new HttpWebServer(80);
             
             VirtualDirectory root = new VirtualDirectory();
-            DriveDirectory template = new DriveDirectory("template",Directory.GetCurrentDirectory() + "//www//admin//template",root);
-            DriveDirectory apps = new DriveDirectory("apps", Directory.GetCurrentDirectory() + "//www//admin//apps", root);
+            DriveDirectory template = new DriveDirectory("template",Directory.GetCurrentDirectory() + @"\www\admin\template",root);
+            DriveDirectory apps = new DriveDirectory("apps", Directory.GetCurrentDirectory() + @"\www\admin\apps", root);
 
             server.Root = root;
             var cm = new CacheManifest(root);
@@ -145,8 +144,8 @@ namespace IPS.Server
 
             root.AddFile(cm);
 
-            auth = new BasicAuthenticator();
-            auth.AddUser("admin", Properties.Settings.Default.password);
+            //auth = new BasicAuthenticator();
+            //auth.AddUser("admin", Properties.Settings.Default.password);
 
             //server.RequireAuthentication = true;
             //server.AuthenticateRealm = "DMX Controller Login";
@@ -157,11 +156,18 @@ namespace IPS.Server
 
             server.Start();
 
-            //start server socket, for feedback + fast comms
-            sse = new Alchemy.WebSocketServer(8282, IPAddress.Any);
-            sse.OnConnected = OnConnected;
-            sse.OnDisconnect = OnDisconnect;
-            sse.Start();
+            try
+            {
+                ////start server socket, for feedback + fast comms
+                sse = new Alchemy.WebSocketServer(8282, IPAddress.Any);
+                sse.OnConnected = OnConnected;
+                sse.OnDisconnect = OnDisconnect;
+                sse.Start();
+            }
+            catch (Exception e)
+            {
+               
+            }
 
             //setup hooks for changing cuelist...
             window.CueStack.Cues.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Cues_CollectionChanged);
@@ -184,14 +190,14 @@ namespace IPS.Server
 
         void DmxController_OnReceive(byte[] chans)
         {
-            if (DateTime.Now - last > TimeSpan.FromMilliseconds(50))
-            {
-                string[] ints = chans.Select(x => ((int)x).ToString()).ToArray();
+            //if (DateTime.Now - last > TimeSpan.FromMilliseconds(50))
+            //{
+            //    string[] ints = chans.Select(x => ((int)x).ToString()).ToArray();
 
-                string data = "{\"command\":\"update\",\"channels\":[" + ints.Aggregate((o, e) => o + "," + e) + "]}";
-                Clients.ForEach(new Action<UserContext>((ox) => { ox.Send(data); }));
-                last = DateTime.Now;
-            }
+            //    string data = "{\"command\":\"update\",\"channels\":[" + ints.Aggregate((o, e) => o + "," + e) + "]}";
+            //    Clients.ForEach(new Action<UserContext>((ox) => { ox.Send(data); }));
+            //    last = DateTime.Now;
+            //}
         }
 
         List<UserContext> Clients = new List<UserContext>();
@@ -209,14 +215,14 @@ namespace IPS.Server
 
                 switch (vals[0])
                 {
-                    case "update":
-                        int channel = Convert.ToInt32(vals["channel"]);
-                        int value = Convert.ToInt32(vals["value"]);
-                        if (window.DmxController != null)
-                        {
-                            window.DmxController.UpdateChannel(channel, value);
-                        }
-                        break;
+                    //case "update":
+                    //    int channel = Convert.ToInt32(vals["channel"]);
+                    //    int value = Convert.ToInt32(vals["value"]);
+                    //    if (window.DmxController != null)
+                    //    {
+                    //        window.DmxController.UpdateChannel(channel, value);
+                    //    }
+                    //    break;
 
                     case "status":
                         string html = "Status at " + DateTime.Now.ToUniversalTime() + "<br>" + "Server Running: <b>" + window.IsRunning + "</b><br>" + "Connected Clients: <b>" + window.ConnectedClients + "</b><br>";
