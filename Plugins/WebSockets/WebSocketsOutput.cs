@@ -74,6 +74,7 @@ namespace IPS.Plugins.WebSockets
             {
                 //start server socket, for fast comms
                 sse = new Alchemy.WebSocketServer(Port, IPAddress.Any);
+                sse.FlashAccessPolicyEnabled = false;
                 sse.OnConnected = OnConnected;
                 sse.OnDisconnect = OnDisconnect;
                 sse.Start();
