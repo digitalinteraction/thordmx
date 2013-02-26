@@ -18,6 +18,10 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation />
     <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -143,6 +147,9 @@
     <Content Include="..\packages\ZeroconfService.0.6.0.0\lib\net40\ZeroconfService.dll">
       <Link>ZeroconfService.dll</Link>
     </Content>
+    <Content Include="log4net.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Plugins\CommandLine.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -189,12 +196,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Plugins\ZMQLib.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="www\admin\apps\vb\runme.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="www\admin\apps\vb\setup.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="www\admin\template\images\ajax-loader.gif">
@@ -249,54 +250,6 @@
     <Content Include="www\admin\apps\android.apk">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="www\admin\apps\vb\Application Files\NUILight.VenueBuilder_1_0_0_7\1267737382_App Store.ico.deploy">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="www\admin\apps\vb\Application Files\NUILight.VenueBuilder_1_0_0_7\Alchemy.dll.deploy">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="www\admin\apps\vb\Application Files\NUILight.VenueBuilder_1_0_0_7\ICSharpCode.SharpZipLib.dll.deploy">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="www\admin\apps\vb\Application Files\NUILight.VenueBuilder_1_0_0_7\JsonExSerializer.dll.deploy">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="www\admin\apps\vb\Application Files\NUILight.VenueBuilder_1_0_0_7\MahApps.Metro.dll.deploy">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="www\admin\apps\vb\Application Files\NUILight.VenueBuilder_1_0_0_7\NUILight Controller.dll.deploy">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="www\admin\apps\vb\Application Files\NUILight.VenueBuilder_1_0_0_7\NUILight.Communication.dll.deploy">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="www\admin\apps\vb\Application Files\NUILight.VenueBuilder_1_0_0_7\NUILight.SharedObjects.dll.deploy">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="www\admin\apps\vb\Application Files\NUILight.VenueBuilder_1_0_0_7\NUILight.VenueBuilder.application">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="www\admin\apps\vb\Application Files\NUILight.VenueBuilder_1_0_0_7\NUILight.VenueBuilder.exe.config.deploy">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="www\admin\apps\vb\Application Files\NUILight.VenueBuilder_1_0_0_7\NUILight.VenueBuilder.exe.deploy">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="www\admin\apps\vb\Application Files\NUILight.VenueBuilder_1_0_0_7\NUILight.VenueBuilder.exe.manifest">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="www\admin\apps\vb\Application Files\NUILight.VenueBuilder_1_0_0_7\System.Windows.Interactivity.dll.deploy">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="www\admin\apps\vb\Application Files\NUILight.VenueBuilder_1_0_0_7\WPFToolkit.Extended.dll.deploy">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="www\admin\apps\vb\Application Files\NUILight.VenueBuilder_1_0_0_7\ZeroconfService.dll.deploy">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="www\admin\apps\vb\NUILight.VenueBuilder.application">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="www\admin\template\cache.manifest.file">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
