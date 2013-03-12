@@ -10,6 +10,10 @@ namespace Gadgeteer.Modules.DigitalInteractionGroup
 {
     /// <summary>
     /// Module to connect to a ThorDMX lighting control server and control lighting. This module can act as either a controller or a device in the lighting system.
+    /// 
+    /// TODO:
+    /// - Register event for specific channel update.
+    /// - Fading Controls
     /// </summary>
     public class LightingControl
     {
@@ -21,6 +25,30 @@ namespace Gadgeteer.Modules.DigitalInteractionGroup
         private int transmitport = 12345;
         private int receiveport = 8888;
         private System.Net.Sockets.Socket receiver;
+
+        public class RgbLamp
+        {
+            public RgbLamp(int chan, LightingControl lc)
+            {
+                Channel = chan;
+                this.lc = lc;
+            }
+
+            private LightingControl lc;
+
+            public int Channel { get; private set; }
+            public void SetColor(Color color)
+            {
+                lc.UpdateChannel(Channel, color.R);
+                lc.UpdateChannel(Channel, color.G);
+                lc.UpdateChannel(Channel, color.B);
+            }
+        }
+
+        public RgbLamp RegisterRgbLamp(int startchan)
+        {
+            return new RgbLamp(startchan,this);
+        }
 
         public LightingControl()
         {

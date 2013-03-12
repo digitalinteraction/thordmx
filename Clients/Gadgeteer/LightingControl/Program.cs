@@ -26,6 +26,9 @@ namespace LightingControl
             lighting.Connect("192.168.0.1");
             lighting.Blackout();
             lighting.UpdateChannel(1, 512);
+
+            var rgb = lighting.RegisterRgbLamp(1);
+            rgb.SetColor(GT.Color.Purple);
         }
     }
 }
