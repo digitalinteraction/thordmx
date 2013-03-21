@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
-	<title>NUILight Server</title>
+	<title>Lighting Control</title>
 	<link rel="stylesheet"  href="./template/jquery.mobile-1.1.1.min.css" />
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -127,7 +127,8 @@
 
 	        //alert('socket closed');
 	        //timeout and connect again...
-	        setTimeout(function () { connect('ws://'+system); }, 5000);
+	        if (!wscontrol.readyState != 1)
+	            setTimeout(function () { connect('ws://'+system); }, 5000);
 	    };
 	};
 
@@ -460,8 +461,6 @@ div.ui-slider-vertical, div.ui-slider-verticalInverted { width: 15px; }
 
 a.ui-slider-handle-vertical, a.ui-slider-handle-verticalInverted { position: absolute; z-index: 10;  top: 50%; width: 28px; height: 28px; margin-top: -15px; margin-left: -8px; }
 
-.ui-btn-icon-notext .ui-btn-inner .ui-icon {margin:0; }
-
 </style>
 </head> 
 <body>
@@ -584,14 +583,7 @@ a.ui-slider-handle-vertical, a.ui-slider-handle-verticalInverted { position: abs
 		</ul>
 	</div>
 	</div>
-	<div data-role="content">
-		
-            <h2>Software</h2>
-            <a href="/apps/vb/setup.exe" rel="external"><div class="download">Venue Builder<br /><i>Windows</i></div></a>
-			<a href="/apps/android.apk" rel="external"><div class="download">Rigging Remote<br /><i>Android</i></div></a>
-           
-			<div style="clear:both"></div>
-			
+	<div data-role="content">			
 			<!--<h2>Access Control</h2>
 			System Name: <b>%systemname%</b><br><br>
 			<form method="GET">
