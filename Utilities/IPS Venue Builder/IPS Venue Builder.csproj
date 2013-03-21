@@ -19,6 +19,10 @@
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <Utf8Output>true</Utf8Output>
     <ExpressionBlendVersion>4.0.20525.0</ExpressionBlendVersion>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
     <PublishUrl>C:\Users\Tom\Documents\Visual Studio 2010\Projects\NUILight\ThorServer\www\admin\apps\vb\</PublishUrl>
     <Install>false</Install>
     <InstallFrom>Web</InstallFrom>
