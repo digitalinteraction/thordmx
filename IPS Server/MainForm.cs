@@ -572,7 +572,7 @@ namespace IPS.Server
             e.Cancel = true;
             if (!closed)
             {
-                notifyIcon1.ShowBalloonTip(1000, "NUILight Server", "DMX server is still running, right click on this icon to close", ToolTipIcon.Info);
+                notifyIcon1.ShowBalloonTip(1000, "ThorDMX Server", "DMX server is still running, right click on this icon to close", ToolTipIcon.Info);
                 closed = true;
             }
         }
