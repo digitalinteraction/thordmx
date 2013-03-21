@@ -66,13 +66,13 @@ namespace IPS.Communication.Plugins
                         if (handlers.ContainsKey("*"))
                         {
                             if (handlers["*"].ContainsKey(address))
-                                handlers["*"][address].Invoke(device, address, new object[] { channel, value});
+                                handlers["*"][address].Invoke(device, address, new object[] { device, channel, value});
                         }
 
                         if (handlers.ContainsKey(device))
                         {
                             if (handlers[device].ContainsKey(address))
-                                handlers[device][address].Invoke(device, address, new object[] { channel, value });
+                                handlers[device][address].Invoke(device, address, new object[] {device, channel, value });
                         }
                     break;
 
