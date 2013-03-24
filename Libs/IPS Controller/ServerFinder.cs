@@ -6,13 +6,14 @@ using System.Collections.ObjectModel;
 using ZeroconfService;
 using System.ComponentModel;
 using System.Windows.Forms;
+using System.Net;
 
 namespace IPS.Controller
 {
     public class ServerFinder
     {
         public List<string> Servers {get;set;}
-
+        NetServiceBrowser nsBrowser = new NetServiceBrowser();
         public ServerFinder()
         {
 
@@ -23,7 +24,7 @@ namespace IPS.Controller
             //BonjourServiceResolver bsr = new BonjourServiceResolver();
             //bsr.ServiceFound += new Network.ZeroConf.ObjectEvent<Network.ZeroConf.IService>(bsr_ServiceFound);
             //bsr.Resolve("_dmx._udp");
-            NetServiceBrowser nsBrowser = new NetServiceBrowser();
+            
             nsBrowser.AllowMultithreadedCallbacks = true;
             nsBrowser.AllowApplicationForms = true;
 
@@ -33,25 +34,32 @@ namespace IPS.Controller
             nsBrowser.SearchForService("_dmx._udp", "");
         }
 
-        void nsBrowser_DidRemoveService(NetServiceBrowser browser, NetService service, bool moreComing)
+        public void Stop()
         {
-            Servers.Remove(service.HostName);
+            nsBrowser.Stop();
         }
 
+        void nsBrowser_DidRemoveService(NetServiceBrowser browser, NetService service, bool moreComing)
+        {
+            Servers.RemoveAll((o) => { return o == service.HostName; });
+        }
         void nsBrowser_DidFindService(NetServiceBrowser browser, NetService service, bool moreComing)
         {
 
             service.DidResolveService += new NetService.ServiceResolved(service_DidResolveService);
-            service.ResolveWithTimeout(100);
+            service.ResolveWithTimeout(200);
         }
 
-        public event Action<string> OnServerFound;
+        public event Action<string,string> OnServerFound;
 
         void service_DidResolveService(NetService service)
         {
-           Servers.Add(service.HostName);
-           if (OnServerFound != null)
-               OnServerFound(service.HostName);
+            if (!Servers.Contains(service.HostName))
+            {
+                Servers.Add(service.HostName);
+                if (OnServerFound != null)
+                    OnServerFound(service.HostName,(service.Addresses[0] as IPEndPoint).Address.ToString());
+            }
         }
     }
 }
