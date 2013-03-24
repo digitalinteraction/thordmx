@@ -29,6 +29,9 @@ namespace LightingControl
 
             var rgb = lighting.RegisterRgbLamp(1);
             rgb.SetColor(GT.Color.Purple);
+
+            lighting.FadeDown(1);
+
         }
     }
 }
