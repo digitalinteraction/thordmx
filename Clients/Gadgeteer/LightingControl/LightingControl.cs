@@ -5,6 +5,7 @@ using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using Microsoft.SPOT.Hardware;
+using System.Collections;
 
 namespace Gadgeteer.Modules.DigitalInteractionGroup
 {
@@ -26,6 +27,9 @@ namespace Gadgeteer.Modules.DigitalInteractionGroup
         private int receiveport = 8888;
         private System.Net.Sockets.Socket receiver;
 
+        /// <summary>
+        /// Describes a RGB mixer lamp (using 3 channels) as a quick way to set colors.
+        /// </summary>
         public class RgbLamp
         {
             public RgbLamp(int chan, LightingControl lc)
@@ -37,12 +41,104 @@ namespace Gadgeteer.Modules.DigitalInteractionGroup
             private LightingControl lc;
 
             public int Channel { get; private set; }
+
+
+            /// <summary>
+            /// Sets the color of the lamp.
+            /// </summary>
+            /// <param name="color">GT.Color that the lamp should change to</param>
             public void SetColor(Color color)
             {
                 lc.UpdateChannel(Channel, color.R);
-                lc.UpdateChannel(Channel, color.G);
-                lc.UpdateChannel(Channel, color.B);
+                lc.UpdateChannel(Channel+1, color.G);
+                lc.UpdateChannel(Channel+2, color.B);
             }
+        }
+
+        byte[] live = new byte[513];
+
+        ArrayList faders = new ArrayList();
+
+        private double DEFAULT_FADE = 3;
+
+        public void FadeUp(int channel)
+        {
+            faders.Add(new FaderItem() { channel=channel,timeleft = DEFAULT_FADE,target=255});
+            if (!timerstarted)
+                StartTimer();
+        }
+
+        public void FadeUp(int channel, double time)
+        {
+            faders.Add(new FaderItem() { channel=channel,timeleft = time, target = 255});
+            if (!timerstarted)
+                StartTimer();
+        }
+
+        private class FaderItem
+        {
+            public int channel;
+            public double timeleft;
+            public double change;
+            public int target;
+        }
+
+        public void FadeDown(int channel)
+        {
+            faders.Add(new FaderItem() { channel = channel, timeleft = DEFAULT_FADE, target = 0 });
+            if (!timerstarted)
+                StartTimer();
+        }
+
+        public void FadeDown(int channel,double time)
+        {
+            faders.Add(new FaderItem() { channel=channel,timeleft = time, target = 0});
+            if (!timerstarted)
+                StartTimer();
+        }
+
+        bool timerstarted = false;
+
+        private double FADE_WAIT = 0.1;
+
+        private void StartTimer()
+        {
+            Thread t = new Thread(new ThreadStart(() => {
+                timerstarted = true;
+                while (timerstarted)
+                {
+                    bool change = false;
+                    for (int i = 0; i < faders.Count;i++)
+                    {
+                        FaderItem v = faders[i] as FaderItem;
+                        if (v.change == 0)
+                        {
+                            v.change = ((double)(v.target - live[v.channel]) / (double)(v.timeleft / FADE_WAIT));
+                            v.timeleft += FADE_WAIT;
+                        }
+                        if (v.timeleft > 0)
+                        {
+                            if ((v.change < 0 && live[v.channel] >= v.target) || (v.change > 0 && live[v.channel] <= v.target))
+                            {
+                                UpdateChannel(v.channel, System.Math.Min(System.Math.Max(0, ((int)live[v.channel] + (int)v.change)), 255));
+                                v.timeleft -= FADE_WAIT;
+                                change = true;
+                            }
+                        }
+
+                    }
+
+                    Thread.Sleep((int)(FADE_WAIT * 1000));
+
+                    //if no changes needed:
+                    if (!change)
+                    {
+                        timerstarted = false;
+                        return;
+                    }
+                }
+            }));
+            t.Start();
         }
 
         public RgbLamp RegisterRgbLamp(int startchan)
@@ -135,8 +231,11 @@ namespace Gadgeteer.Modules.DigitalInteractionGroup
             {
                 throw new Exception("Channel must be 0-512");
             }
-            osc.SendMessage("/dmx/updatechannel", channel, value);
+            osc.SendMessage("/dmx/updatechannel", DeviceName, channel,value);
+            live[channel] = (byte)value;
         }
+
+        int[] output = new int[514];
 
         /// <summary>
         /// Updates all 512 channels at once.
@@ -148,7 +247,10 @@ namespace Gadgeteer.Modules.DigitalInteractionGroup
             {
                 throw new Exception("There must be 512 channels when updating all channels at once.");
             }
-            osc.SendMessage("/dmx/frameupdate", DeviceName, 0, 0, vals);
+            Array.Copy(vals,0,output,2,512);
+            osc.SendMessage("/dmx/frameupdate", DeviceName,output);
+            for (int i = 0; i < 512; i++)
+                live[i] = (byte)vals[i];
         }
 
         /// <summary>
@@ -157,6 +259,7 @@ namespace Gadgeteer.Modules.DigitalInteractionGroup
         public void Blackout()
         {
             osc.SendMessage("/dmx/blackout", DeviceName);
+            live = new byte[512];
         }
     }
 }
