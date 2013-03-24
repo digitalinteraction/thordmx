@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html manifest="cache.manifest">
+<html>
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -29,11 +29,11 @@
          {
             //create html
             for (i = 0; i < 10; i++) {
-                $('#sliders').append('<div class="faderdiv"><div id="label' + i + '" class="faderl">' + (i + 1) + '</div><input class="chanselector" type="range" name="slider' + i + '" rel="' + i + '" id="slider-' + i + '" value="0" min="0" max="255" step="5" /><div style="clear:both;"></div><div id="progress' + i + '" class="progress"><div class="progress_inner"></div></div></div>');
+                $('#sliders').append('<div class="faderdiv"><div id="label' + i + '" class="faderl">' + (i + 1) + '</div><input class="chanselector" type="range" data-highlight="true" name="slider' + i + '" rel="' + i + '" id="slider-' + i + '" value="0" min="0" max="255" step="5" /><div style="clear:both;"></div></div>');
             }
 
             for (i = 0; i < 10; i++) {
-                $('#slidersv').append('<div class="faderdivv"><div id="labelv' + i + '" class="faderv">' + (i + 1) + '</div><input sliderOrientation="verticalInverted" class="chanselector" type="range" name="slider' + i + '" rel="' + i + '" id="sliderv-' + i + '" value="0" min="0" max="255" step="5" /><div id="progressv' + i + '" class="progressv"><div class="progress_innerv"></div></div><div style="clear:both;"></div></div>');
+                $('#slidersv').append('<div class="faderdivv"><div id="labelv' + i + '" class="faderv">' + (i + 1) + '</div><input sliderOrientation="verticalInverted" data-highlight="true" class="chanselector" type="range" name="slider' + i + '" rel="' + i + '" id="sliderv-' + i + '" value="0" min="0" max="255" step="5" /></div>');
             }
             loaded = true;
         }
@@ -53,15 +53,16 @@
                 wscontrol.send('?status');
         }, 5000);
 
-        values = new Array();
-        //values.length = 512;
-        for (var j = 0; j < 512; j++) {
-            values[j] = 0;
-        }
+       
         bank = 1;
     });
 	
 	var values;
+	values = new Array();
+	//values.length = 512;
+	for (var j = 0; j < 512; j++) {
+	    values[j] = 0;
+	}
 	var bank;
 	var wscontrol;
 	var wsoutput;
@@ -92,34 +93,30 @@
 			}
         };
 
-	    wscontrol.onmessage = function (evt) {
-	        //handle received data...
-	        //get json
-	        var data = jQuery.parseJSON(evt.data);
-	        switch (data.command) {
-	            case 'update':
-	                updatevalues(data.channels);
-	                break;
-	            case 'status':
-	                $('#responsecontainer').html(data.html);
-	                break;
-	            case 'cues':
-	                //clear cuelist...
-	                $('#cuelist').children().not('[data-role="list-divider"]').remove('li');
+        wscontrol.onmessage = function (evt) {
+            //handle received data...
+            //get json
+            var data = jQuery.parseJSON(evt.data);
+            switch (data.command) {
+                case 'status':
+                    $('#responsecontainer').html(data.html);
+                    break;
+                case 'cues':
+                    //clear cuelist...
+                    $('#cuelist').children().not('[data-role="list-divider"]').remove('li');
 
-	                $.each(data.cues, function (i, v) {
-	                    $('#cuelist').children().last('li').after('<li data-theme="c"><a href="#" onclick="cue(' + i + ');">' + v + '</a></li>');
-	                });
+                    $.each(data.cues, function (i, v) {
+                        $('#cuelist').children().last('li').after('<li data-theme="c"><a href="#" onclick="cue(' + i + ');">' + v + '</a></li>');
+                    });
 
-                    try
-                    {
-	                    $('#cuelist').listview('refresh');
+                    try {
+                        $('#cuelist').listview('refresh');
                     }
-                    catch(err) {}
+                    catch (err) { }
 
-	                break;
-	        }
-	    };
+                    break;
+            }
+        };
 
 	    wscontrol.onclose = function () {
 	        //update icon...
@@ -146,24 +143,23 @@
 	function updatevalues(data) {
 	    //update channel values
 	    for (var i = 0; i < data.length; i++) {
-	        values[i] = data[i];
+	        values[i] = data[i+1];
 	    }
 
-	    var j = 0;
+	    /*var j = 0;
 	    for (var i = ((bank-1)*10); i <= (((bank-1)*10)+10); i++) {
 	        //bank
-	        $('#progress' + (j-1)).find('.progress_inner').width((data[i] / 255) * 100 + '%');
+	        //$('#progress' + (j-1)).find('.progress_inner').width((data[i] / 255) * 100 + '%');
 	        j++;
 	    }
 
 	    j = 0;
 	    for (var i = ((bank - 1) * 10); i <= (((bank - 1) * 10) + 10); i++) {
 	        //bank
-	        $('#progressv' + (j - 1)).find('.progress_innerv').height((data[i] / 255) * 100 + '%');
+	        //$('#progressv' + (j - 1)).find('.progress_innerv').height((data[i] / 255) * 100 + '%');
 	        j++;
-	    }
-	    changebank(0);
-        
+	    }*/
+	    changebank(0);   
 	}
 
 	var changing = new Array();
@@ -195,7 +191,8 @@
 	            //$('#dummy').load('?update&channel=' + (chan + 1) + '&value=' + val);
 
 	            //with new code:
-	            if (!dontupdate)
+	            //if (!dontupdate)
+	            if (wsoutput.readyState == 1 && !dontupdate)
 	                wsoutput.send('?update&channel=' + (chan + 1) + '&value=' + val);
 	        }
 	    });
@@ -215,10 +212,10 @@
 	            //alert(index);
 	            var the = values[parseInt(index)];
 	            //alert(values[index]);
-	            $('[rel="' + (i - 1) + '"]').val(parseInt(the));
-	            $('[rel="' + (i - 1) + '"]').slider('refresh');
-	            $('#label' + i + '').html(((bank - 1) * 10) + i + 1);
-	            $('#labelv' + i + '').html(((bank - 1) * 10) + i + 1);
+	            $('[rel="' + (i) + '"]').val(parseInt(the));
+	            $('[rel="' + (i) + '"]').slider('refresh');
+	            $('#label' + i + '').text(((bank - 1) * 10) + i + 1);
+	            $('#labelv' + i + '').text(((bank - 1) * 10) + i + 1);
 	            //$('#live' + i + '').html(the);
 	            //alert("this function does not work!");
 	        }
@@ -276,7 +273,10 @@
 		if (bank > 51)
 		    bank = 51;
 
+		//alert(bank);
 		$("#startval").val(bank);
+		//$("#startval").slider('refresh');
+
 		//$('#startval').slider('refresh');
 		//bank = parseInt($(this).val());
 			//alert(chan);
@@ -287,15 +287,16 @@
 			//alert(index);
 			var the = values[parseInt(index)];
 			//alert(values[index]);
-			$('[rel="' + (i-1) + '"]').val(parseInt(the));
-			$('[rel="' + (i-1) + '"]').slider('refresh');
-			$('#label' + i + '').html(((bank - 1) * 10) + i + 1);
-			$('#labelv' + i + '').html(((bank - 1) * 10) + i + 1);
+			$('[rel="' + i + '"]').val(parseInt(the));
+			$('[rel="' + i + '"]').slider('refresh');
+			$('#label' + i + '').text(((bank - 1) * 10) + i + 1);
+			$('#labelv' + i + '').text(((bank - 1) * 10) + i + 1);
 			//$('#live' + i + '').html(the);
 			//$('#live'+i+'').html(the);
 
         }
 
+        //updatevalues(values);
 
         dontupdate = false;
     }
@@ -606,7 +607,7 @@ a.ui-slider-handle-vertical, a.ui-slider-handle-verticalInverted { position: abs
 			</form>-->
 
 			<h2>Venue Setup</h2>
-			<form action="/?venue" method="POST" enctype="multipart/form-data">
+			<form action="/?venue" data-ajax="false" method="POST" enctype="multipart/form-data">
 			<input type="file" name="myfile" />
 			<input type="submit" value="Upload" />
 			</form> 

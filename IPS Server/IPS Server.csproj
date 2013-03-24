@@ -260,7 +260,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="www\admin\index.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="www\admin\template\css\style.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

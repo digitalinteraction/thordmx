@@ -691,7 +691,7 @@ namespace IPS.Server
 
         public void NewCue(string name)
         {
-            ServerCue cue = new ServerCue(channels.Select((o) => (int)o).ToArray(),name);
+            ServerCue cue = new ServerCue(lastupdate.Select((o) => (int)o).ToArray(),name);
             CueStack.Cues.Add(cue);
             listBox1.BeginInvoke(new Action(() =>
             {
@@ -703,7 +703,7 @@ namespace IPS.Server
 
         internal void PlayCue(int p)
         {
-            byte[] outp = CueStack.GetCombinedCue(CueStack.Cues[p], channels);
+            byte[] outp = CueStack.GetCombinedCue(CueStack.Cues[p], lastupdate);
             DmxController.UpdateChannels(outp);
         }
 
