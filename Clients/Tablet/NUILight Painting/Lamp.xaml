@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="IPS.TabletPainting.Lamp"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:s="http://schemas.microsoft.com/surface/2008"
+             mc:Ignorable="d" 
+             Width="200" Height="200" Opacity="0.5" PreviewMouseDown="UserControl_PreviewMouseDown" PreviewMouseMove="UserControl_PreviewMouseMove" PreviewMouseUp="UserControl_PreviewMouseUp" PreviewTouchDown="UserControl_ContactDown" PreviewTouchMove="UserControl_ContactChanged" PreviewTouchUp="UserControl_ContactLeave">
+    <Grid>
+        <Ellipse Name="ellipse" Fill="Pink" Stroke="Transparent">
+        </Ellipse>
+    </Grid>
+</UserControl>

@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="IPS.TabletPainting.RigView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                      xmlns:s="http://schemas.microsoft.com/surface/2008"
+                      xmlns:me="clr-namespace:IPS.TabletPainting">
+    <Grid>
+
+        <me:Hits></me:Hits>
+        <Canvas Background="Transparent" TouchDown="Grid_ContactDown" MouseDown="grid_MouseDown" MouseUp="grid_MouseUp" MouseMove="grid_MouseMove" TouchUp="Grid_ContactUp" TouchMove="Grid_ContactChanged" Name="grid"></Canvas>
+        <Canvas Name="lights"></Canvas>
+            <me:Sequencer x:Name="sequencer"></me:Sequencer>
+        <s:ScatterView x:Name="scatterview"></s:ScatterView>
+        
+    </Grid>
+</UserControl>

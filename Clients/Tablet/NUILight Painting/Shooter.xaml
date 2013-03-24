@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="IPS.TabletPainting.Shooter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" Width="119" Height="40"
+             >
+    <Grid>
+       
+        <Grid.Background>
+            <ImageBrush ImageSource="shooter.png" />
+        </Grid.Background>
+        <Ellipse Name="filler" Margin="88,8,6,7"></Ellipse>
+    </Grid>
+</UserControl>
