@@ -144,8 +144,9 @@ namespace IPS.Communication.Plugins
         }
 
         public void Disconnect()
-        { 
-
+        {
+            //server.Unbind("tcp://*:8887");
+            server.Close();
         }
 
         public void RegisterHandler(DmxEventHandler dothis, string osc_type, string osc_name, string osc_device)
