@@ -36,10 +36,7 @@ namespace IPS.Plugins.WebSockets
         {
             if (DateTime.Now - last > TimeSpan.FromMilliseconds(100))
             {
-
-
                 string[] ints = data.Select(x => ((byte)x).ToString()).ToArray();
-
                 string idata = "{\"command\":\"update\",\"channels\":[" + ints.Aggregate((o, e) => o + "," + e) + "]}";
                 Clients.ForEach(new Action<UserContext>((ox) => { ox.Send(idata); }));
                 last = DateTime.Now;
@@ -61,6 +58,7 @@ namespace IPS.Plugins.WebSockets
         void OnConnected(UserContext context)
         {
             Clients.Add(context);
+            Push();
         }
 
         void OnDisconnect(UserContext context)
