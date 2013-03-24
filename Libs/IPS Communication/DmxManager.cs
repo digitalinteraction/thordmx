@@ -142,6 +142,7 @@ namespace IPS.Communication
 
 
             Services.ForEach((o) => { o.Stop(); });
+            eventsources.ForEach((o) => { o.Disconnect(); });
         }
 
         public DmxManager()
