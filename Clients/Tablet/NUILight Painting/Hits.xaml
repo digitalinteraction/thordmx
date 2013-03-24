@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="IPS.TabletPainting.Hits"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             Width="1024" Height="600" Opacity="0.5">
+    <Grid>
+        <Grid Name="box" Margin="0,0,0,300" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Rectangle Stroke="White" HorizontalAlignment="Left" VerticalAlignment="Top" RadiusX="20" RadiusY="20" StrokeThickness="3" Width="256" Height="95" Fill="#964F4F4F">
+            	<Rectangle.Effect>
+            		<BlurEffect Radius="15"/>
+            	</Rectangle.Effect>
+            </Rectangle>
+            <Border Margin="0,0,3,3">
+                <TextBlock x:Name="text" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18" Foreground="#FF828282" Margin="17,0" Width="219">Hints</TextBlock>
+            </Border>
+        </Grid>
+        </Grid>
+</UserControl>
