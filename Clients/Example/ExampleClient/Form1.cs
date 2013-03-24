@@ -28,15 +28,15 @@ namespace ExampleClient
         {
             InitializeComponent();
             //find server
-            finder.OnServerFound += new Action<string>(finder_OnServerFound);
+            finder.OnServerFound += new Action<string,string>(finder_OnServerFound);
         }
 
         bool done = false;
 
-        void finder_OnServerFound(string obj)
+        void finder_OnServerFound(string obj,string ip)
         {
                 //start client
-                controller = new IPS.Communication.Plugins.OSCController(Dns.GetHostEntry(obj).AddressList.First().ToString());
+                controller = new IPS.Communication.Plugins.OSCController(ip);
                 controller.Start();
 
                 feedback = new IPS.Communication.Plugins.UDPBroadcastFeedback();
