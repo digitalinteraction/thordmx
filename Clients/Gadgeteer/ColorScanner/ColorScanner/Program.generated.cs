@@ -39,9 +39,9 @@ namespace ColorScanner
 		
             camera = new GTM.GHIElectronics.Camera(3);
 		
-            ethernet_J11D = new GTM.GHIElectronics.Ethernet_J11D(7);
+            button1 = new GTM.GHIElectronics.Button(5);
 		
-            button1 = new GTM.GHIElectronics.Button(11);
+            ethernet_J11D = new GTM.GHIElectronics.Ethernet_J11D(7);
 
         }
     }
