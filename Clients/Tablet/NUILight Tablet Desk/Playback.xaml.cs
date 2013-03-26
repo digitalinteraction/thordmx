@@ -87,5 +87,10 @@ namespace IPS.TabletDesk
             if (window.CurrentCueOnFire!=null)
                 outgoing.Content = window.CurrentCueOnFireNum+1 + " " +window.CurrentCueOnFire.name;
         }
+
+        private void chkLockLive1_TapGesture(object sender, TouchEventArgs e)
+        {
+            chkLockLive1.IsChecked = !chkLockLive1.IsChecked;
+        }
     }
 }

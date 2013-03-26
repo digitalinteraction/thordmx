@@ -9,7 +9,7 @@
     <Grid Margin="5" Height="30">
         <Rectangle Name="image" Width="20" HorizontalAlignment="Right" Visibility="Hidden">
             <Rectangle.Fill>
-            <VisualBrush Visual="{StaticResource appbar_equalizer}" Stretch="None" />
+            <VisualBrush Visual="{StaticResource appbar_equalizer}" Stretch="Uniform" />
             </Rectangle.Fill>
         </Rectangle>
         <Label Name="fade" HorizontalAlignment="Right" Width="25" Margin="0,0,20,0" FontSize="10" HorizontalContentAlignment="Right"></Label>

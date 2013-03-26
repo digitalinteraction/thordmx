@@ -7,7 +7,7 @@
              mc:Ignorable="d" Background="#FF161616" Height="584" Width="1022">
     <Grid>
         <Custom:SurfaceScrollViewer HorizontalAlignment="Left" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Visible" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
-        	<StackPanel Orientation="Horizontal" x:Name="stack" Height="640" Width="1024" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        	<StackPanel Orientation="Horizontal" x:Name="stack" Height="584" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
         </Custom:SurfaceScrollViewer>
     </Grid>
 </UserControl>

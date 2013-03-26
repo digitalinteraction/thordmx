@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using IPS.SharedObjects;
 using Microsoft.Surface.Presentation.Controls;
 using IPS.Controller;
+using System.Linq;
 
 namespace IPS.TabletDesk
 {
@@ -44,7 +45,7 @@ namespace IPS.TabletDesk
 
         private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (!updating)
+            if (!updating) //prevents loop
             {
                 dmx.UpdateValue(channel, (int)((e.NewValue / 100.0) * 255.0));
             }
@@ -55,17 +56,20 @@ namespace IPS.TabletDesk
         {
             try
             {
-                chan.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(l.Color));
+                bdr.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(l.Color));
             }
             catch {}
         }
         bool updating = false;
         internal void Update(int p)
         {
-            updating = true;
-            value.Content = (int)((p / 255)*100) + "%";
-            slider.Value = (p / 255.0) * 100.0;
-            updating = false;
+            if (this.TouchesCapturedWithin.Count() == 0)
+            {
+                updating = true;
+                value.Content = (int)((p / 255) * 100) + "%";
+                slider.Value = (p / 255.0) * 100.0;
+                updating = false;
+            }
         }
     }
 }

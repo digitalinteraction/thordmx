@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using IPS.SharedObjects;
 using IPS.Controller;
+using SurfaceClient;
 
 namespace IPS.TabletDesk
 {
@@ -54,11 +55,11 @@ namespace IPS.TabletDesk
 
         internal void Update(byte[] o)
         {
-            if (this.Visibility == System.Windows.Visibility.Hidden)
+            if ((App.Current.MainWindow as MainWindow).tabs.SelectedIndex == 1)
             {
                 for (int i = 0; i < 50; i++)
                 {
-                    (stack.Children[i] as Fader).Update(o[i+1]);
+                    (stack.Children[i] as Fader).Update(o[i + 1]);
                 }
             }
         }
