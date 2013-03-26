@@ -6,10 +6,12 @@
 	xmlns:Custom="http://schemas.microsoft.com/surface/2008"
 	mc:Ignorable="d"
     xmlns:s="http://schemas.microsoft.com/surface/2008"
-	x:Class="IPS.TabletDesk.Fader" Width="100" Height="580">
+	x:Class="IPS.TabletDesk.Fader" Width="100" Height="500" VerticalAlignment="Bottom">
     <Grid Name="LayoutRoot">
-        <Label Name="chan" Content="1" FontSize="26.667" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Top"></Label>
-        <Label Name="value" FontSize="18.667" Foreground="#FF8B8B8B" HorizontalAlignment="Center" VerticalAlignment="Top" Content="100%" Margin="0,36,0,0"></Label>
-        <s:SurfaceSlider ValueChanged="slider_ValueChanged" Name="slider" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Minimum="0" Maximum="100" Margin="0,80,0,20" Orientation="Vertical" Value="50" />
+        <Border CornerRadius="3" Name="bdr" BorderBrush="Silver" BorderThickness="1" VerticalAlignment="Top" HorizontalAlignment="Center" Padding="3,0,3,0" Margin="0,5,0,5">
+            <Label Name="chan" Content="1" FontSize="26.667" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Top"></Label>
+        </Border>
+        <Label Name="value" FontSize="18.667" Foreground="#FF8B8B8B" HorizontalAlignment="Center" VerticalAlignment="Top" Content="100%" Margin="0,45,0,0"></Label>
+        <s:SurfaceSlider ValueChanged="slider_ValueChanged" Name="slider" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Minimum="0" Maximum="100" Margin="0,80,0,20" Orientation="Vertical" />
 	</Grid>
 </UserControl>

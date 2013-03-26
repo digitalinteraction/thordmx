@@ -13,7 +13,7 @@
                  mc:Ignorable="d"
     Background="#FF1F1F1F" Icon="/NUILight.TabletDesk;component/icon1.ico">
 
-    <Window.Resources>        
+    <s:SurfaceWindow.Resources>        
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colours.xaml" />
@@ -24,49 +24,62 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedSingleRowTabControl.xaml" />
 				<ResourceDictionary Source="Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <Style TargetType="{x:Type s:SurfaceCheckBox}" BasedOn="{StaticResource MetroCheckBox}"></Style>
+			
+            <Style TargetType="{x:Type s:SurfaceButton}" BasedOn="{StaticResource MetroButton}">
+            	         <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+						 <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+			</Style>
         </ResourceDictionary>
-    </Window.Resources>
+    </s:SurfaceWindow.Resources>
         <Grid>
-        <TabControl Name="tabs">
+        <TabControl Name="tabs" SelectionChanged="tabs_SelectionChanged">
         	<TabItem Header="Venue View" TouchDown="TabItem_ContactDown">
         		<Grid Background="#FF161616">
         			<me:CueDisplay x:Name="cuedisplay" Margin="0,0,-8,0"/>
         			<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
-        				<s:SurfaceButton Click="SurfaceButton_Click_1" HorizontalAlignment="Right" Margin="0,2,0,0" Height="48" Width="48" Padding="0,3,0,0" BorderThickness="1">
-        					<s:SurfaceButton.Background>
+        				<s:SurfaceButton Click="SurfaceButton_Click_1" HorizontalAlignment="Right" Margin="0,2,0,0" Height="48" Width="48" Padding="0,3,0,0" BorderThickness="1" Background="Transparent">
+        					<Rectangle Width="32" Height="32">
+            						<Rectangle.Fill> 
 								<VisualBrush Visual="{StaticResource appbar_list1}" Stretch="None" />
-							</s:SurfaceButton.Background>
+							</Rectangle.Fill>
+							</Rectangle>
+							
         				</s:SurfaceButton>
-        				<s:SurfaceButton Click="SurfaceButton_Click" HorizontalAlignment="Right" Margin="0,2,0,0" Height="48" Width="48" Padding="0" BorderThickness="1">
-        						<s:SurfaceButton.Background>
+        				<s:SurfaceButton Click="SurfaceButton_Click" HorizontalAlignment="Right" Margin="0,2,0,0" Height="48" Width="48" Padding="0" BorderThickness="1" Background="Transparent">
+							<Rectangle Width="32" Height="32">
+            						<Rectangle.Fill> 
 								<VisualBrush Visual="{StaticResource appbar_equalizer}" Stretch="None" />
-							</s:SurfaceButton.Background>
+							</Rectangle.Fill>
+							</Rectangle>
         				</s:SurfaceButton>
-        				<s:SurfaceButton Click="SurfaceButton_Click_2" HorizontalAlignment="Right" Margin="0,2,0,0" Width="48" Height="48" Padding="0,5,0,7" BorderThickness="1">
-        						<s:SurfaceButton.Background>
+        				<s:SurfaceButton Click="SurfaceButton_Click_2" HorizontalAlignment="Right" Margin="0,2,0,0" Width="48" Height="48" Padding="0,5,0,7" BorderThickness="1" Background="Transparent"> 
+							<Rectangle Width="32" Height="32">
+            						<Rectangle.Fill> 
 								<VisualBrush Visual="{StaticResource appbar_play}" Stretch="None" />
-							</s:SurfaceButton.Background>
+							</Rectangle.Fill>
+							</Rectangle>
         				</s:SurfaceButton>
-        				<s:SurfaceButton Click="SurfaceButton_Click_4" HorizontalAlignment="Right" Margin="0,2,0,0" Height="48" Width="48" Padding="0" BorderThickness="1">
-        						<s:SurfaceButton.Background>
+        				<s:SurfaceButton Click="SurfaceButton_Click_4" HorizontalAlignment="Right" Margin="0,2,0,0" Height="48" Width="48" Padding="0" BorderThickness="1" Background="Transparent">
+        					<Rectangle Width="32" Height="32">
+            						<Rectangle.Fill> 
 								<VisualBrush Visual="{StaticResource appbar_crosshair}" Stretch="None" />
-							</s:SurfaceButton.Background>
+							</Rectangle.Fill>
+							</Rectangle>
         				</s:SurfaceButton>
         			</StackPanel>
+        			<s:ScatterView VerticalAlignment="Bottom" Height="584.527" Width="1014" HorizontalAlignment="Right" Margin="0" d:LayoutOverrides="Width">
+        				<s:ScatterViewItem x:Name="playbackscatter" CanScale="False" Center="150,400" Orientation="0" Margin="0" CanRotate="False" >
+        					<me:Playback x:Name="playback" Grid.Column="1" Grid.RowSpan="2" Margin="0"/>
+        				</s:ScatterViewItem>
+        			</s:ScatterView>
             		        	
         		</Grid>
         	</TabItem>
             <TabItem Header="Faders" TouchDown="TabItem_ContactDown">
-        		<me:Faders x:Name="faders" d:LayoutOverrides="Width, Height, Margin"/>
+        		<me:Faders x:Name="faders" d:LayoutOverrides="Width, Height, Margin" />
         	</TabItem>
         </TabControl>
-            <s:ScatterView Margin="0,0,10,0" VerticalAlignment="Bottom" Height="679">
-            	<s:ScatterViewItem x:Name="playbackscatter" CanScale="False" Center="150,400" Orientation="0" Margin="0" CanRotate="False" >
-            		<me:Playback x:Name="playback" Grid.Column="1" Grid.RowSpan="2" Margin="0"/>
-            	</s:ScatterViewItem>
-            </s:ScatterView>
-            <Grid Opacity="0.3" PreviewTouchUp="cuelistscatter_PreviewContactUp" PreviewTouchDown="cuelistscatter_PreviewContactDown" x:Name="cuelistscatter" Width="200" Height="640" Background="#FF898989" HorizontalAlignment="Right" Margin="0" d:LayoutOverrides="Width">
+            <Grid Opacity="0.3" PreviewTouchUp="cuelistscatter_PreviewContactUp" PreviewTouchDown="cuelistscatter_PreviewContactDown" x:Name="cuelistscatter" Width="218.167" Height="640" Background="#FF898989" HorizontalAlignment="Right" Margin="0">
             	<GroupBox Background="#FF232323" Header="Cues" Height="640" Foreground="White">
             		<Grid Margin="0">
             			<Grid.RowDefinitions>
@@ -74,32 +87,44 @@
             				<RowDefinition Height="60" />
             			</Grid.RowDefinitions>
 
-            			<s:SurfaceListBox ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" SelectionChanged="surfaceListBox1_SelectionChanged"  x:Name="surfaceListBox1" Margin="0,5,0,-13" VerticalContentAlignment="Top" Background="{DynamicResource LCD}" />
-            			<UniformGrid Grid.Row="1" Rows="1" Columns="5" Margin="0,17,0,3">
-            				<s:SurfaceButton x:Name="surfaceButton2" Click="surfaceButton2_Click" Padding="0" Margin="2" >
-            					<s:SurfaceButton.Background>
-            			<VisualBrush Visual="{StaticResource appbar_page_new}" Stretch="None" />
-            		</s:SurfaceButton.Background>
+            			<s:SurfaceListBox ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" SelectionChanged="surfaceListBox1_SelectionChanged"  x:Name="surfaceListBox1" Margin="0,5,0,-18" VerticalContentAlignment="Top" Background="{DynamicResource LCD}" />
+            			<UniformGrid Grid.Row="1" Rows="1" Columns="5" Margin="0,22,0,0">
+            				<s:SurfaceButton x:Name="surfaceButton2" Click="surfaceButton2_Click" Padding="0" Margin="0,0,2,0" Background="Transparent">
+            					<Rectangle Width="28"  Height="28">
+            						<Rectangle.Fill> 
+            							<VisualBrush Visual="{StaticResource appbar_page_new}" Stretch="Uniform" />				   						
+            						</Rectangle.Fill>    					
+            					</Rectangle>
             				</s:SurfaceButton>
-            				<s:SurfaceButton  x:Name="surfaceButton3"  Click="surfaceButton3_Click" Padding="0" Margin="2">
-            					<s:SurfaceButton.Background>
-            			<VisualBrush Visual="{StaticResource appbar_page_delete}" Stretch="None" />
-            		</s:SurfaceButton.Background>
+							
+            				<s:SurfaceButton  x:Name="surfaceButton3"  Click="surfaceButton3_Click" Padding="0" Margin="0,0,2,0" Background="Transparent">
+            					
+            					<Rectangle Width="28"  Height="28">
+            						<Rectangle.Fill> 
+            							<VisualBrush Visual="{StaticResource appbar_page_delete}" Stretch="Uniform" />				   						
+            						</Rectangle.Fill>    					
+            					</Rectangle>
             				</s:SurfaceButton>
-            				<s:SurfaceButton   x:Name="surfaceButton4" Click="surfaceButton4_Click" Padding="0" Margin="2">
-            					<s:SurfaceButton.Background>
-            			<VisualBrush Visual="{StaticResource appbar_page_multiple}" Stretch="None" />
-            		</s:SurfaceButton.Background>
+            				<s:SurfaceButton   x:Name="surfaceButton4" Click="surfaceButton4_Click" Padding="0" Margin="0,0,2,0" Background="Transparent">
+            					<Rectangle Width="28"  Height="28">
+            						<Rectangle.Fill> 
+            						<VisualBrush Visual="{StaticResource appbar_page_multiple}" Stretch="Uniform" />				   						
+									</Rectangle.Fill>    					
+								</Rectangle>
             				</s:SurfaceButton>
-            				<s:SurfaceButton  x:Name="surfaceButton5"  Click="surfaceButton5_Click" Padding="0" Margin="2">
-            					<s:SurfaceButton.Background>
-            			<VisualBrush Visual="{StaticResource appbar_arrow_up}" Stretch="None" />
-            		</s:SurfaceButton.Background>
+            				<s:SurfaceButton  x:Name="surfaceButton5"  Click="surfaceButton5_Click" Padding="0" Margin="0,0,2,0" Background="Transparent">
+            					<Rectangle Width="28"  Height="28">
+            						<Rectangle.Fill> 
+            							<VisualBrush Visual="{StaticResource appbar_arrow_up}" Stretch="Uniform" />				   						
+            						</Rectangle.Fill>    					
+            					</Rectangle>
             				</s:SurfaceButton>
-            				<s:SurfaceButton  x:Name="surfaceButton6"  Click="surfaceButton6_Click"  d:LayoutOverrides="VerticalAlignment" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="2">
-            					<s:SurfaceButton.Background>
-            			<VisualBrush Visual="{StaticResource appbar_arrow_down}" Stretch="None" />
-            		</s:SurfaceButton.Background>
+            				<s:SurfaceButton  x:Name="surfaceButton6"  Click="surfaceButton6_Click"  d:LayoutOverrides="VerticalAlignment" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,2,0" Background="Transparent">
+            					<Rectangle Width="28"  Height="28">
+            						<Rectangle.Fill> 
+            							<VisualBrush Visual="{StaticResource appbar_arrow_down}" Stretch="Uniform" />				   						
+            						</Rectangle.Fill>    					
+            					</Rectangle>
             				</s:SurfaceButton>
             			</UniformGrid>
             		</Grid>
@@ -114,7 +139,7 @@
             <s:SurfaceListBox Width="201" x:Name="servers" Background="{x:Null}" BorderBrush="{x:Null}" SelectionChanged="servers_SelectionChanged" Height="238.501" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,81,133.499" />
             <s:SurfaceTextBox Height="23" Margin="684,385,81,0" x:Name="address" VerticalAlignment="Top" Text="" Visibility="Hidden" />
             <s:SurfaceTextBox Height="23" Margin="439,488,432,0" x:Name="myname" VerticalAlignment="Top" Text="TabletDesk" Visibility="Hidden" />
-            <Button x:Name="surfaceButton10" HorizontalAlignment="Right" FontSize="25" Click="surfaceButton10_Click" Content="Start" VerticalAlignment="Bottom" Width="201.21" Margin="0,0,80.79,80.246" BorderBrush="#FF707070" />
+            <s:SurfaceButton x:Name="surfaceButton10" HorizontalAlignment="Right" FontSize="25" Click="surfaceButton10_Click" Content="Start" VerticalAlignment="Bottom" Width="201.21" Margin="0,0,80.79,80.246" BorderBrush="#FF707070" HorizontalContentAlignment="Center" />
             <Label Height="28" Margin="680,359,156,0" x:Name="label5" VerticalAlignment="Top" HorizontalContentAlignment="Center" Content="Enter ThorDMX Server Address" Visibility="Hidden"/>
             <Label Height="28" Margin="439,458,432,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" Content="Device Name" Visibility="Hidden" />
             	<Label HorizontalContentAlignment="Center" Width="Auto" Margin="0,161,77.311,0" Content="Tablet Lighting Desk" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="48" FontFamily="/NUILight.SurfaceDesk;component/#Segoe"/>

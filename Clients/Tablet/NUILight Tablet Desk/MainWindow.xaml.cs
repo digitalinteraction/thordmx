@@ -16,7 +16,6 @@ using Microsoft.Surface.Presentation;
 using Microsoft.Surface.Presentation.Controls;
 using System.Net;
 using System.IO;
-using JsonExSerializer;
 using System.Drawing;
 using System.Threading;
 using System.ComponentModel;
@@ -223,7 +222,10 @@ namespace IPS.TabletDesk
 		/// </summary>
 		public MainWindow()
 		{
+
 			InitializeComponent();
+
+            Touch.FrameReported += new TouchFrameEventHandler(Touch_FrameReported);
 
 			// Add handlers for Application activation events
 			//AddActivationHandlers();
@@ -268,7 +270,14 @@ namespace IPS.TabletDesk
                      feedback_OnUpdate(lastupdatevalues);
                  }
              }), null, 0, 300);
+
+             connectionip = "192.168.1.100";
 		}
+
+        void Touch_FrameReported(object sender, TouchFrameEventArgs e)
+        {
+            
+        }
 
 		private bool connected;
 
@@ -278,6 +287,7 @@ namespace IPS.TabletDesk
 			{
 				DoubleAnimation ani = new DoubleAnimation(cuelistscatter.Opacity, 0.5, new Duration(TimeSpan.FromMilliseconds(200)));
 				ani.FillBehavior = FillBehavior.HoldEnd;
+                cuelistscatter.IsHitTestVisible = false;
 				cuelistscatter.BeginAnimation(ScatterViewItem.OpacityProperty, ani);
 			}
 		}
@@ -530,11 +540,13 @@ namespace IPS.TabletDesk
 			if (vis)
 			{
 				cuelistscatter.BeginAnimation(ScatterViewItem.OpacityProperty, null);
+                cuelistscatter.IsHitTestVisible = false;
 				cuelistscatter.Opacity = 0.5;
 			}
 			else
 			{
 				cuelistscatter.BeginAnimation(ScatterViewItem.OpacityProperty, null);
+                cuelistscatter.IsHitTestVisible = true;
 				cuelistscatter.Opacity = 1;
 			}
 			vis = !vis;
@@ -671,8 +683,13 @@ namespace IPS.TabletDesk
 
         private void TabItem_ContactDown(object sender, TouchEventArgs e)
         {
-
             tabs.SelectedItem = (sender as TabItem);
+            feedback_OnUpdate(lastupdatevalues);
+
+        }
+
+        private void tabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
         }
     }
 }
