@@ -22,10 +22,10 @@ namespace Sequencer
         Gadgeteer.Modules.GHIElectronics.Button button1;
         Gadgeteer.Modules.GHIElectronics.Button button2;
         Gadgeteer.Modules.GHIElectronics.Button button3;
-        Gadgeteer.Modules.GHIElectronics.MulticolorLed multicolorLed;
         Gadgeteer.Modules.GHIElectronics.MulticolorLed multicolorLed1;
         Gadgeteer.Modules.GHIElectronics.MulticolorLed multicolorLed2;
         Gadgeteer.Modules.GHIElectronics.MulticolorLed multicolorLed3;
+        Gadgeteer.Modules.GHIElectronics.MulticolorLed multicolorLed;
         Gadgeteer.Modules.GHIElectronics.Potentiometer potentiometer;
 
         public static void Main()
@@ -46,13 +46,13 @@ namespace Sequencer
 		
             ethernet_J11D = new GTM.GHIElectronics.Ethernet_J11D(7);
 		
-            multicolorLed3 = new GTM.GHIElectronics.MulticolorLed(8);
-		
-            multicolorLed = new GTM.GHIElectronics.MulticolorLed(multicolorLed3.DaisyLinkSocketNumber);
+            multicolorLed = new GTM.GHIElectronics.MulticolorLed(8);
 		
             multicolorLed1 = new GTM.GHIElectronics.MulticolorLed(multicolorLed.DaisyLinkSocketNumber);
 		
             multicolorLed2 = new GTM.GHIElectronics.MulticolorLed(multicolorLed1.DaisyLinkSocketNumber);
+		
+            multicolorLed3 = new GTM.GHIElectronics.MulticolorLed(multicolorLed2.DaisyLinkSocketNumber);
 		
             potentiometer = new GTM.GHIElectronics.Potentiometer(9);
 		

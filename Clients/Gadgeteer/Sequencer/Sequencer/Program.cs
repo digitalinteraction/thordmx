@@ -38,29 +38,35 @@ namespace Sequencer
             buttons.Add(button1);
             buttons.Add(button2);
             buttons.Add(button3);
+
             foreach (Button b in buttons)
             {
-                b.ButtonPressed += new Button.ButtonEventHandler(b_ButtonPressed);
+                b.ButtonPressed+=new Button.ButtonEventHandler(b_ButtonPressed);
             }
 
             for (int i = 0; i < 4; i++)
             {
                 lights.Add(dmx.RegisterRgbLamp((i * 3) + 1));
-                
             }
 
-            multicolorLed.FadeRepeatedly(GT.Color.Red);
+            multicolorLed.GreenBlueSwapped = true;
+            multicolorLed1.GreenBlueSwapped = true;
+            multicolorLed2.GreenBlueSwapped = true;
+            multicolorLed3.GreenBlueSwapped = true;
+
+
             multicolorLed1.FadeRepeatedly(GT.Color.Red);
             multicolorLed2.FadeRepeatedly(GT.Color.Red);
             multicolorLed3.FadeRepeatedly(GT.Color.Red);
+            multicolorLed.FadeRepeatedly(GT.Color.Red);
         }
 
         void SetColor(MulticolorLed led, int i)
         {
             colors[i]++;
-            if (colors[i] > 6)
+            if (colors[i] > 8)
             {
-                colors[i] = 0;
+                colors[i] = 1;
             }
             switch (colors[i])
             {
@@ -82,6 +88,12 @@ namespace Sequencer
                 case 6:
                     led.TurnColor(GT.Color.Cyan);
                     break;
+                case 7:
+                    led.TurnColor(GT.Color.White);
+                    break;
+                case 8:
+                    led.TurnColor(GT.Color.Black);
+                    break;
             }
         }
 
@@ -92,7 +104,7 @@ namespace Sequencer
                 case 1:
                     return GT.Color.Red;
                 case 2:
-                    return GT.Color.Green;
+                    return GT.Color.FromRGB(0, 255, 0);
                 case 3:
                     return GT.Color.Blue;
                 case 4:
@@ -101,6 +113,10 @@ namespace Sequencer
                     return GT.Color.Purple;
                 case 6:
                     return GT.Color.Cyan;
+                case 7:
+                    return GT.Color.White;
+                case 8:
+                    return GT.Color.Black;
             }
             return Color.Black;
         }
@@ -113,15 +129,15 @@ namespace Sequencer
             }
             if (sender == button1)
             {
-                SetColor(multicolorLed, 1);
+                SetColor(multicolorLed1, 1);
             }
             if (sender == button2)
             {
-                SetColor(multicolorLed, 2);
+                SetColor(multicolorLed2, 2);
             }
             if (sender == button3)
             {
-                SetColor(multicolorLed, 3);
+                SetColor(multicolorLed3, 3);
             }
         }
 
@@ -139,9 +155,12 @@ namespace Sequencer
                 if (currentlamp > 3)
                     currentlamp = 0;
 
+                int i = 0;
                 foreach (Button b in buttons)
                 {
                     b.TurnLEDOff();
+                    (lights[i] as Gadgeteer.Modules.DigitalInteractionGroup.LightingControl.RgbLamp).SetColor(GT.Color.Black);
+                    i++;
                 }
 
                 (buttons[currentlamp] as Button).TurnLEDOn();
@@ -151,18 +170,18 @@ namespace Sequencer
             }
 
             double pot = potentiometer.ReadPotentiometerPercentage();
-            speed = (int)(5 + ((pot - 0.5) * 8));
+            speed = (int)(5 + ((pot - 0.5) * 10));
         }
 
         void Interface_NetworkAddressChanged(object sender, EventArgs e)
         {
-            dmx.Connect("192.168.1.110");
-            multicolorLed.TurnOff();
+            dmx.Connect("192.168.1.102");
             multicolorLed1.TurnOff();
             multicolorLed2.TurnOff();
             multicolorLed3.TurnOff();
+            multicolorLed.TurnOff();
             //start loop...
-            GT.Timer timer = new GT.Timer(200);
+            GT.Timer timer = new GT.Timer(150);
             timer.Tick += new GT.Timer.TickEventHandler(timer_Tick);
             timer.Start();
         }
