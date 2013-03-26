@@ -26,14 +26,6 @@ namespace LightVoting
             NetworkInterfaceExtension.AssignNetworkingStackTo(ethernet_J11D.Interface);
             ethernet_J11D.Interface.NetworkInterface.EnableDhcp();
             ethernet_J11D.Interface.NetworkAddressChanged += new GHI.Premium.Net.NetworkInterfaceExtension.NetworkAddressChangedEventHandler(Interface_NetworkAddressChanged);
-
-
-            FirstScreen();
-
-            button1.ButtonPressed += new Button.ButtonEventHandler(button1_ButtonPressed);
-            button.ButtonPressed += new Button.ButtonEventHandler(button_ButtonPressed);
-
-
             Debug.Print("Program Started");
         }
 
@@ -55,11 +47,11 @@ namespace LightVoting
         void CalcLamps()
         {
             dmx.FadeUp(4,2);
-            dmx.FadeUp(5,2);
-            dmx.FadeUp(6,2);
-            dmx.FadeUp(7,2);
+            //dmx.FadeUp(5,2);
+           // dmx.FadeUp(6,2);
+           // dmx.FadeUp(7,2);
             dmx.FadeUp(8,2);
-            dmx.FadeUp(9,2);
+            //dmx.FadeUp(9,2);
             GT.Timer timer = new GT.Timer(3000);
             timer.Tick+=new GT.Timer.TickEventHandler((o)=>{
                 o.Stop();
@@ -67,10 +59,10 @@ namespace LightVoting
                 int v2 = (int)((votesagainst / (double)(votesfor + votesagainst)) * 255);
                 dmx.UpdateChannel(4, v2);
                 dmx.UpdateChannel(8, v1);
-                dmx.FadeDown(5, 2);
-                dmx.FadeDown(6, 2);
-                dmx.FadeDown(7, 2);
-                dmx.FadeDown(9, 2);
+                //dmx.FadeDown(5, 2);
+                //dmx.FadeDown(6, 2);
+                //dmx.FadeDown(7, 2);
+                //dmx.FadeDown(9, 2);
             });
             timer.Start();
         }
@@ -91,7 +83,10 @@ namespace LightVoting
 
         void Interface_NetworkAddressChanged(object sender, EventArgs e)
         {
-            dmx.Connect("192.168.1.110");
+            dmx.Connect("192.168.1.102");
+            FirstScreen();
+            button1.ButtonPressed += new Button.ButtonEventHandler(button1_ButtonPressed);
+            button.ButtonPressed += new Button.ButtonEventHandler(button_ButtonPressed);
         }
 
         //display current score
