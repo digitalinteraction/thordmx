@@ -1,0 +1,16 @@
+#######################################
+# Syntax Coloring Map For ThorDMX
+#######################################
+
+DMX	KEYWORD1
+ThorDMX	KEYWORD1
+
+SetDestination	KEYWORD2
+UpdateChannel	KEYWORD2
+Blackout	KEYWORD2
+UpdateAll	KEYWORD2
+SetAutoDestination	KEYWORD2
+run	KEYWORD2
+
+
+
