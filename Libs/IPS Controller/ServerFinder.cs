@@ -13,10 +13,18 @@ namespace IPS.Controller
     public class ServerFinder
     {
         public List<string> Servers {get;set;}
-        NetServiceBrowser nsBrowser = new NetServiceBrowser();
+        NetServiceBrowser nsBrowser;
         public ServerFinder()
         {
-
+            try
+            {
+                nsBrowser = new NetServiceBrowser();
+            }
+            catch
+            {
+                MessageBox.Show("Problem starting ServerFinder - Bonjour is probably not installed");
+                Environment.Exit(1);
+            }
             Label l = new Label();
 
             Servers = new List<string>();
