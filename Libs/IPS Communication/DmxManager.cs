@@ -46,31 +46,6 @@ namespace IPS.Communication
 
         private void SetupServerBroadcast()
         {
-
-            //UDP
-            //broadcast myself...
-            //Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            //sock.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
-            //192.168.255.255
-
-            //IPEndPoint iep = new IPEndPoint(new IPAddress(new byte[] {192,168,255,255}), 9999);
-            //IPEndPoint iep = new IPEndPoint(IPAddress.Broadcast, 9999);
-
-            //string hostname = Dns.GetHostName();
-            //byte[] data = Encoding.ASCII.GetBytes(hostname);
-
-            //Thread broadcast = new Thread(new ThreadStart(() =>
-            //{
-            //    while (true)
-            //    {
-            //        sock.SendTo(data, iep);
-            //        //Console.WriteLine("Broadcasting Myself...");
-            //        Thread.Sleep(2000);
-            //    }
-            //}));
-            //broadcast.Priority = ThreadPriority.Lowest;
-           // broadcast.Start();            
-
             //ZEROCONF
             foreach (var o in Outputs)
             {
@@ -111,6 +86,8 @@ namespace IPS.Communication
             Services.Add(s2);
         }
 
+        public bool IsStarted {get;set;}
+
         public void Start()
         {
             dmxoutputs.ForEach(new Action<IDmxOutput>((o) =>
@@ -130,10 +107,12 @@ namespace IPS.Communication
                 }
                 catch { }
             }));
+            IsStarted = true;
         }
 
         public void Stop()
         {
+            IsStarted = false;
             //stop all...
             dmxoutputs.ForEach(new Action<IDmxOutput>((o) =>
             {
@@ -229,6 +208,7 @@ namespace IPS.Communication
                 while (true)
                 {
                     fireStatus();
+                    KeepAlive();
                     Thread.Sleep(TimeSpan.FromSeconds(1));
                 }
             }));
@@ -411,6 +391,17 @@ namespace IPS.Communication
         }
 
         byte[] currentoutput = new byte[512];
+
+        private void KeepAlive()
+        {
+            if (IsStarted)
+            {
+                dmxoutputs.ForEach(new Action<IDmxOutput>((o) =>
+                {
+                    o.UpdateChannels(currentoutput);
+                }));
+            }
+        }
 
         private void fireStatus()
         {
