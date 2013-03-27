@@ -507,17 +507,19 @@ namespace IPS.Server
             //this.channels = channels;
 
             ////save backup channels for restart...
-            
-            if (DateTime.Now - last > TimeSpan.FromMilliseconds(500))
+            if (DmxController.IsStarted)
             {
-                last = DateTime.Now;
-                backup.Position = 0;
-                lock (lastupdate)
+                if (DateTime.Now - last > TimeSpan.FromMilliseconds(500))
                 {
-                    backup.Write(lastupdate, 0, lastupdate.Length);
+                    last = DateTime.Now;
+                    lock (lastupdate)
+                    {
+                        backup.Position = 0;
+                        backup.Write(lastupdate, 0, lastupdate.Length);
+                    }
+                    backup.Flush();
+                    backup.Position = 0;
                 }
-                backup.Flush();
-                backup.Position = 0;
             }
         }
 
@@ -770,6 +772,22 @@ namespace IPS.Server
             button1.Show();
             button2.Hide();
 
+        }
+
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+            if (DmxController.IsStarted)
+            {
+                    last = DateTime.Now;
+                    
+                    lock (lastupdate)
+                    {
+                        backup.Position = 0;
+                        backup.Write(lastupdate, 0, lastupdate.Length);
+                    }
+                    backup.Flush();
+                    backup.Position = 0;
+            }
         }
     }
 }
