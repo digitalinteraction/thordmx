@@ -36,6 +36,7 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button3 = new System.Windows.Forms.Button();
             this.statuslight = new System.Windows.Forms.Panel();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -67,7 +68,6 @@
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.propertygrid = new System.Windows.Forms.PropertyGrid();
             this.settings = new Messir.Windows.Forms.TabStrip();
-            this.button3 = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -140,6 +140,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(98, 26);
             this.panel1.TabIndex = 1;
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(25, -1);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(40, 27);
+            this.button3.TabIndex = 8;
+            this.button3.Text = "Save";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click_1);
             // 
             // statuslight
             // 
@@ -479,16 +489,6 @@
             this.settings.TabIndex = 3;
             this.settings.Text = "tabStrip1";
             this.settings.UseVisualStyles = true;
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(25, -1);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(40, 27);
-            this.button3.TabIndex = 8;
-            this.button3.Text = "Save";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click_1);
             // 
             // MainForm
             // 

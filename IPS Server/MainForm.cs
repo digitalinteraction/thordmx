@@ -93,9 +93,8 @@ namespace IPS.Server
 
         public MainForm(string[] args)
         {
-            InitializeComponent();
             log4net.Config.XmlConfigurator.Configure();
-
+            InitializeComponent();
             logger = new MemoryAppender();
             var repository = (log4net.Repository.Hierarchy.Hierarchy)LogManager.GetRepository();
             repository.Root.AddAppender(logger);
