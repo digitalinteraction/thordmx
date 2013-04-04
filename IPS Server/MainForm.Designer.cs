@@ -108,8 +108,10 @@
             // status
             // 
             this.status.FormattingEnabled = true;
+            this.status.HorizontalScrollbar = true;
             this.status.Location = new System.Drawing.Point(9, 16);
             this.status.Name = "status";
+            this.status.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.status.Size = new System.Drawing.Size(325, 82);
             this.status.TabIndex = 1;
             // 

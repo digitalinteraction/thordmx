@@ -451,7 +451,14 @@ namespace IPS.Server
             Home();
             SetTextPosPix(0, 0);
             Thread.Sleep(100);
-            Text(1, "DMX Server ON " + window.SystemName + "\nVenue: " + window.Venues.CurrentVenue.Name);
+            if (window.Venues.CurrentVenue != null)
+            {
+                Text(1, "DMX Server ON " + window.SystemName + "\nVenue: " + window.Venues.CurrentVenue.Name);
+            }
+            else
+            {
+                Text(1, "DMX Server ON " + window.SystemName + "\nVenue: <not set>");
+            }
             Thread.Sleep(100);
         }
 
