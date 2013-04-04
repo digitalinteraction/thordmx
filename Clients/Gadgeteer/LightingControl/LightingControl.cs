@@ -152,6 +152,8 @@ namespace Gadgeteer.Modules.DigitalInteractionGroup
             DeviceName = "<gadgeteer>";
         }
 
+        DateTime lastdispatched = DateTime.Now;
+
         /// <summary>
         /// Connect to an ThorDMX Lighting Server
         /// </summary>
@@ -173,15 +175,20 @@ namespace Gadgeteer.Modules.DigitalInteractionGroup
                     EndPoint ep = (EndPoint)iep;
                     try
                     {
+                        byte[] data = new byte[513];
                         while (true)
-                        {
-                            byte[] data = new byte[513];
+                        {  
                             int length = receiver.ReceiveFrom(data, ref ep);
-                            for (int i = 0; i < 513; i++)
+                            if (lastdispatched + TimeSpan.FromTicks(TimeSpan.TicksPerSecond) < DateTime.Now)
                             {
-                                vals[i] = data[i];
+                                //Debug.Print(data[16] + "");
+                                for (int i = 0; i < 513; i++)
+                                {
+                                    vals[i] = data[i];
+                                }
+                                DispatchSingle(this, vals);
+                                lastdispatched = DateTime.Now;
                             }
-                            DispatchSingle(this,vals);
                             Thread.Sleep(50);
                         }
                     }
