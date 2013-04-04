@@ -73,7 +73,7 @@ namespace ColorScanner
         void Interface_NetworkAddressChanged(object sender, EventArgs e)
         {
             Debug.Print("Ethernet UPx");
-            dmx.Connect("192.168.1.102");
+            dmx.Connect("192.168.1.100");
             //dmx.Blackout();
             //dmx.UpdateAllChannels(new int[512]);
             //dmx.FadeUp(5);
