@@ -17,11 +17,13 @@ namespace SoundTrigger
     {
         // GTM.Module definitions
         Gadgeteer.Modules.GHIElectronics.Music music;
+        Gadgeteer.Modules.GHIElectronics.Ethernet_J11D ethernet;
+        Gadgeteer.Modules.GHIElectronics.UsbClientSP usbClientSP;
 
         public static void Main()
         {
             //Important to initialize the Mainboard first
-            Mainboard = new GHIElectronics.Gadgeteer.FEZHydra();			
+            Mainboard = new GHIElectronics.Gadgeteer.FEZSpider();			
 
             Program program = new Program();
             program.InitializeModules();
@@ -32,7 +34,11 @@ namespace SoundTrigger
         private void InitializeModules()
         {   
             // Initialize GTM.Modules and event handlers here.		
-            music = new GTM.GHIElectronics.Music(4);
+            usbClientSP = new GTM.GHIElectronics.UsbClientSP(1);
+		
+            ethernet = new GTM.GHIElectronics.Ethernet_J11D(7);
+		
+            music = new GTM.GHIElectronics.Music(9);
 
         }
     }

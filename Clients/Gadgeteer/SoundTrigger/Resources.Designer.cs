@@ -36,7 +36,9 @@ namespace SoundTrigger
         [System.SerializableAttribute()]
         internal enum BinaryResources : short
         {
+            _27881_stickinthemud_bike_horn_2 = -12767,
             castle_h_Roger_x_7638_hifi = -6265,
+            police_s_Wiretrip_7787_hifi = 12094,
         }
         [System.SerializableAttribute()]
         internal enum FontResources : short

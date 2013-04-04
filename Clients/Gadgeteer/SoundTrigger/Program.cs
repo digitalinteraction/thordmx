@@ -22,13 +22,16 @@ namespace SoundTrigger
         // This method is run when the mainboard is powered up or reset.   
         void ProgramStarted()
         {
-            GTM.GHIElectronics.Ethernet_ENC28 ethernet = new GTM.GHIElectronics.Ethernet_ENC28(3);
             ethernet.Interface.Open();
             NetworkInterfaceExtension.AssignNetworkingStackTo(ethernet.Interface);
             ethernet.Interface.NetworkInterface.EnableDhcp();
             ethernet.Interface.NetworkAddressChanged += new GHI.Premium.Net.NetworkInterfaceExtension.NetworkAddressChangedEventHandler(Interface_NetworkAddressChanged);
             // Use Debug.Print to show messages in Visual Studio's "Output" window during debugging.
             Debug.Print("Program Started");
+            //music.StopPlaying();
+            music.SetVolume(255);
+            music.Play(Resources.GetBytes(Resources.BinaryResources.police_s_Wiretrip_7787_hifi));//plays track
+            //music.SineTest();
             music.musicFinished += new Music.MusicFinishedPlayingEventHandler(music_musicFinished);
         }
 
@@ -39,7 +42,9 @@ namespace SoundTrigger
 
         void Interface_NetworkAddressChanged(object sender, EventArgs e)
         {
-            dmx.Connect("192.168.1.110");
+            music.Play(Resources.GetBytes(Resources.BinaryResources._27881_stickinthemud_bike_horn_2));//plays track
+            playing = true;
+            dmx.Connect("192.168.1.100",true);
             dmx.OnUpdate += new GTM.DigitalInteractionGroup.LightingControl.LightingEventHandler(dmx_OnUpdate);
         }
 
@@ -48,13 +53,15 @@ namespace SoundTrigger
 
         void dmx_OnUpdate(GTM.DigitalInteractionGroup.LightingControl sender, int[] channels)
         {
+            //Debug.Print("16:" + channels[16]);
             if (last != channels[16])
             {
                 last = channels[16];
                 if (!playing)
                 {
+                    playing = true;
                     music.SetVolume((byte)channels[16]);//sets volume
-                    music.Play(Resources.GetBytes(Resources.BinaryResources.castle_h_Roger_x_7638_hifi));//plays track
+                    music.Play(Resources.GetBytes(Resources.BinaryResources._27881_stickinthemud_bike_horn_2));//plays track
                 }
             }
         }
