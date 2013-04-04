@@ -93,6 +93,8 @@ namespace IPS.Server
 
         public MainForm(string[] args)
         {
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += new UnhandledExceptionEventHandler(currentDomain_UnhandledException);
             log4net.Config.XmlConfigurator.Configure();
             InitializeComponent();
             logger = new MemoryAppender();
@@ -112,8 +114,7 @@ namespace IPS.Server
                 // consume Options type properties
             }
 
-            AppDomain currentDomain = AppDomain.CurrentDomain;
-            currentDomain.UnhandledException += new UnhandledExceptionEventHandler(currentDomain_UnhandledException);
+           
 
             backup = new FileStream(Directory.GetCurrentDirectory() + "\\backup.dat", FileMode.OpenOrCreate,FileAccess.ReadWrite, FileShare.None);
 
@@ -288,7 +289,8 @@ namespace IPS.Server
                 }
                 catch (Exception ex)
                 {
-                    log.Error(ex.Message);
+                    log.Error(ex);
+                    //MessageBox.Show(ex.StackTrace);
                     //status.Items.Insert(0, ex.Message);
                     //status.ForeColor = Color.Red;
 
