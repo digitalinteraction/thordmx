@@ -50,7 +50,8 @@ namespace ExampleClient
 
         void feedback_OnUpdate(byte[] obj)
         {
-            labels.ForEach((o) => { o.Text = obj[(int)o.Tag].ToString(); });
+
+            this.BeginInvoke(new Action<byte[]>((y)=>{labels.ForEach((o) => { o.Text = y[(int)o.Tag].ToString(); });}),obj);
         }
 
         void web_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
