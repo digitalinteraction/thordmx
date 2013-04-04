@@ -66,12 +66,25 @@
     <Reference Include="Gadgeteer.SPI, Version=2.42.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="GHI.Premium.Net, Version=4.2.9.0, Culture=neutral, processorArchitecture=MSIL" />
-    <Reference Include="GHIElectronics.Gadgeteer.FEZHydra, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Gadgeteer.WebClient, Version=2.42.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="GTM.GHIElectronics.Ethernet_ENC28, Version=1.1.4.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="Gadgeteer.WebServer, Version=2.42.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="GHI.Premium.Net, Version=4.2.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="GHIElectronics.Gadgeteer.FEZSpider, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="GTM.GHIElectronics.Ethernet_J11D, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="GTM.GHIElectronics.Music, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="GTM.GHIElectronics.UsbClientSP, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Microsoft.SPOT.Graphics" />
@@ -114,6 +127,12 @@
       <Project>{ECE3C9FB-57F5-4A9E-8752-51A97919C880}</Project>
       <Name>LightingControl</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\police_s-Wiretrip-7787_hifi.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\27881_stickinthemud_bike_horn_2.mp3" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\castle_h-Roger-x-7638_hifi.mp3" />
