@@ -46,6 +46,7 @@ namespace LightVoting
 
         void CalcLamps()
         {
+            UpdateScreen();
             dmx.FadeUp(4,2);
             //dmx.FadeUp(5,2);
            // dmx.FadeUp(6,2);
@@ -57,18 +58,20 @@ namespace LightVoting
                 o.Stop();
                 int v1 = (int)((votesfor / (double)(votesfor + votesagainst)) * 255);
                 int v2 = (int)((votesagainst / (double)(votesfor + votesagainst)) * 255);
-                dmx.UpdateChannel(4, v2);
-                dmx.UpdateChannel(8, v1);
+                dmx.UpdateChannel(4, v1);
+                dmx.UpdateChannel(8, v2);
                 //dmx.FadeDown(5, 2);
                 //dmx.FadeDown(6, 2);
                 //dmx.FadeDown(7, 2);
                 //dmx.FadeDown(9, 2);
             });
             timer.Start();
+            display_T35.SimpleGraphics.AutoRedraw = true;
         }
 
         void FirstScreen()
         {
+            display_T35.SimpleGraphics.Clear();
             display_T35.SimpleGraphics.DisplayImage(Resources.GetBitmap(Resources.BitmapResources.g3362), 40, 10);
             display_T35.SimpleGraphics.DisplayText("What would you call yourself?", Resources.GetFont(Resources.FontResources.chi), GT.Color.Orange, 3, 80);
 
@@ -79,6 +82,12 @@ namespace LightVoting
             display_T35.SimpleGraphics.DisplayImage(Resources.GetBitmap(Resources.BitmapResources.g3377), 40, 182);
 
             display_T35.SimpleGraphics.DisplayImage(Resources.GetBitmap(Resources.BitmapResources.g3377), 230, 182);
+        }
+
+        void UpdateScreen()
+        {
+            FirstScreen();
+            display_T35.SimpleGraphics.DisplayText(""+votesfor+" against "+votesagainst, Resources.GetFont(Resources.FontResources.chi), GT.Color.White, 100, 200);
         }
 
         void Interface_NetworkAddressChanged(object sender, EventArgs e)
