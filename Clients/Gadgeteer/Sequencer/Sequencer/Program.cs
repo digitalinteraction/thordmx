@@ -175,7 +175,7 @@ namespace Sequencer
 
         void Interface_NetworkAddressChanged(object sender, EventArgs e)
         {
-            dmx.Connect("192.168.1.102");
+            dmx.Connect("192.168.1.100");
             multicolorLed1.TurnOff();
             multicolorLed2.TurnOff();
             multicolorLed3.TurnOff();
