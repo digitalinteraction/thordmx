@@ -116,12 +116,12 @@
     <Grid>
     <Canvas Name="grid">
         <Ellipse Fill="Gray" Width="150" Height="150"/>
-        <Ellipse Fill="Orange" Width="100" Height="100" Canvas.Left="25" Canvas.Top="25"/>
-                <s:SurfaceButton Click="SurfaceButton_Click" Canvas.Top="42" Canvas.Left="38" Margin="0" Padding="0" Grid.IsSharedSizeScope="True" Style="{DynamicResource SurfaceButtonStyle1}"/>
+        <Ellipse Fill="{DynamicResource BlueHighlight}" Width="100" Height="100" Canvas.Left="25" Canvas.Top="25"/>
+                <s:SurfaceButton Click="SurfaceButton_Click" Canvas.Top="42" Canvas.Left="38" Margin="0" Padding="0" Grid.IsSharedSizeScope="True" Style="{DynamicResource SurfaceButtonStyle1}" Height="66.667" Width="72.333"/>
             </Canvas>
     </Grid>
     <Grid>
-            <Ellipse Width="150" Height="150" IsHitTestVisible="False">
+            <Ellipse Width="150" Height="150" IsHitTestVisible="False" Visibility="Hidden">
                 <Ellipse.Fill>
                     <RadialGradientBrush>
                         <GradientStop Color="#88FFFFFF" Offset="0.807"/>

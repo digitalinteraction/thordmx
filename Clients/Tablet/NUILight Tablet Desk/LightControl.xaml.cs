@@ -134,43 +134,45 @@ namespace IPS.TabletDesk
 
                 //get the point relative to gettouchpoint
 
-
-                Point p = c.First().GetTouchPoint(colorimg).Position;
-                //Point p = window.TranslatePoint(pp, colorimg);
-
-                //get the point rel
-
-                //Point p = pp;
-                //Debug.Print(p.ToString());
-                int x = (int)Math.Min(149, Math.Max(0, p.X));
-                int y = (int)Math.Min(149, Math.Max(0, p.Y));
-
-
-                int r = Wheel.GetPixel(x, y).R;
-                int g = Wheel.GetPixel(x, y).G;
-                int b = Wheel.GetPixel(x, y).B;
-
-                ChannelValue[0] = r;
-                ChannelValue[1] = g;
-                ChannelValue[2] = b;
-
-                //Debug.Print("Red: " + Wheel.GetPixel(x,y).R);
-                // Debug.Print("Green: " + Wheel.GetPixel(x, y).G);
-                //Debug.Print("Blue: " + Wheel.GetPixel(x, y).B);
-                if (!window.LockLiveOutput) // update live...
+                if (c.Count() > 0)
                 {
-                    OnLightUpdate(this.Channel, r);
-                    OnLightUpdate(this.Channel + 1, g);
-                    OnLightUpdate(this.Channel + 2, b);
+                    Point p = c.First().GetTouchPoint(colorimg).Position;
+                    //Point p = window.TranslatePoint(pp, colorimg);
+
+                    //get the point rel
+
+                    //Point p = pp;
+                    //Debug.Print(p.ToString());
+                    int x = (int)Math.Min(149, Math.Max(0, p.X));
+                    int y = (int)Math.Min(149, Math.Max(0, p.Y));
+
+
+                    int r = Wheel.GetPixel(x, y).R;
+                    int g = Wheel.GetPixel(x, y).G;
+                    int b = Wheel.GetPixel(x, y).B;
+
+                    ChannelValue[0] = r;
+                    ChannelValue[1] = g;
+                    ChannelValue[2] = b;
+
+                    //Debug.Print("Red: " + Wheel.GetPixel(x,y).R);
+                    // Debug.Print("Green: " + Wheel.GetPixel(x, y).G);
+                    //Debug.Print("Blue: " + Wheel.GetPixel(x, y).B);
+                    if (!window.LockLiveOutput) // update live...
+                    {
+                        OnLightUpdate(this.Channel, r);
+                        OnLightUpdate(this.Channel + 1, g);
+                        OnLightUpdate(this.Channel + 2, b);
+                    }
+
+                    finalcolor.Stroke = new SolidColorBrush(Color.FromRgb((byte)r, (byte)g, (byte)b));
+                    color.Fill = finalcolor.Stroke;
+
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        UpdateChannel(ChannelValue);
+                    }));
                 }
-
-                finalcolor.Stroke = new SolidColorBrush(Color.FromRgb((byte)r, (byte)g, (byte)b));
-                color.Fill = finalcolor.Stroke;
-
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    UpdateChannel(ChannelValue);
-                }));
             }
         }
 

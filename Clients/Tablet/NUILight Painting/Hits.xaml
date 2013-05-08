@@ -7,13 +7,9 @@
              Width="1024" Height="600" Opacity="0.5">
     <Grid>
         <Grid Name="box" Margin="0,0,0,300" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Rectangle Stroke="White" HorizontalAlignment="Left" VerticalAlignment="Top" RadiusX="20" RadiusY="20" StrokeThickness="3" Width="256" Height="95" Fill="#964F4F4F">
-            	<Rectangle.Effect>
-            		<BlurEffect Radius="15"/>
-            	</Rectangle.Effect>
-            </Rectangle>
-            <Border Margin="0,0,3,3">
-                <TextBlock x:Name="text" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18" Foreground="#FF828282" Margin="17,0" Width="219">Hints</TextBlock>
+            <Rectangle HorizontalAlignment="Left" VerticalAlignment="Top" StrokeThickness="3" Width="256" Height="60" Fill="#774F4F4F"/>
+            <Border>
+                <TextBlock x:Name="text" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="16" Foreground="#FF828282" Width="219">Hints</TextBlock>
             </Border>
         </Grid>
         </Grid>

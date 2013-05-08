@@ -1,0 +1,4 @@
+- check faders and lamps update correctly with cues / fading
+
+- check adding blur on color pallet.
+- check touch on color mixing

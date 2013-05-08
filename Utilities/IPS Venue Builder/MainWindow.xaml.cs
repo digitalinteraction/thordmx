@@ -69,12 +69,12 @@ namespace IPS.VenueBuilder
                 dmx.Children.Add(l);
             }
             ServerFinder finder = new ServerFinder();
-            finder.OnServerFound += new Action<string>(finder_OnServerFound);
+            finder.OnServerFound += new Action<string,string>(finder_OnServerFound);
         }
 
         Alchemy.WebSocketClient ws;
 
-        void finder_OnServerFound(string obj)
+        void finder_OnServerFound(string obj,string ip)
         {
             ws = new Alchemy.WebSocketClient("ws://" + obj + ":8282/events");
             Dispatcher.BeginInvoke(new Action(() => {
@@ -86,7 +86,6 @@ namespace IPS.VenueBuilder
                 ws.OnReceive = OnReceive;
                 ws.Connect();
                 ws.Send("?venues");
-                
             }));
         }
         void OnReceive(UserContext context)

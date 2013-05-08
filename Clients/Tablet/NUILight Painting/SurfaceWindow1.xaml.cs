@@ -42,13 +42,8 @@ namespace IPS.TabletPainting
             InitializeComponent();
 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-
-            //TODO REMOVE THIS FOR LOGIN
-            //setup.Visibility = System.Windows.Visibility.Hidden;
-
             
             finder.OnServerFound += new Action<string,string>(finder_OnServerFound);
-
             connectionip = "192.168.1.100";
         }
 
@@ -146,18 +141,28 @@ namespace IPS.TabletPainting
                 }
             }
         }
-
+        DateTime lastupdate = DateTime.Now;
+        byte[] lastupdatevalues = new byte[512];
         void feedback_OnUpdate(byte[] vals)
         {
-            //TODO -- rate limiting from the other tablet app
-            Dispatcher.BeginInvoke(new MethodInvoker(delegate()
+            //this is not being fired to begin with (or the regular updates are not coming in).
+            //needs rate limiting...
+            lastupdatevalues = vals;
+            //if (loadedrig)
             {
-                foreach (Lamp l in rigview.lights.Children)
+                if (lastupdate + TimeSpan.FromMilliseconds(200) < DateTime.Now)
                 {
-                    l.Level = vals[l.Channel] / 255f;
-                    //Console.WriteLine("c:"+l.Channel+" v: " + l.Level);
+                    Dispatcher.BeginInvoke(new MethodInvoker(delegate()
+                    {
+                        foreach (Lamp l in rigview.lights.Children)
+                        {
+                            l.Level = vals[l.Channel] / 255f;
+                            //Console.WriteLine("c:"+l.Channel+" v: " + l.Level);
+                        }
+                    }));
+                    lastupdate = DateTime.Now;
                 }
-            }));
+            }
         }
         #endregion
 
