@@ -90,7 +90,7 @@ namespace IPS.TabletPainting
                     it.Center = new Point(Canvas.GetLeft(this), Canvas.GetTop(this));
                     it.CanScale = false;
                     it.ClipToBounds = false;
-                    it.CanRotate = false;
+                    it.CanRotate = true;
                     it.Width = 227;
                     it.Height = 151;
                     it.ContainerManipulationDelta += new ContainerManipulationDeltaEventHandler(it_ContainerManipulationDelta);
@@ -104,9 +104,9 @@ namespace IPS.TabletPainting
                     it.ApplyTemplate();
                     it.Background = null;
                     it.ShowsActivationEffects = false;
-                    //Microsoft.Surface.Presentation.Generic.SurfaceShadowChrome ssc;
-                    //ssc = it.Template.FindName("shadow", it) as Microsoft.Surface.Presentation.Generic.SurfaceShadowChrome;
-                    //ssc.Visibility = Visibility.Hidden;
+                    Microsoft.Surface.Presentation.Generic.SurfaceShadowChrome ssc;
+                    ssc = it.Template.FindName("shadow", it) as Microsoft.Surface.Presentation.Generic.SurfaceShadowChrome;
+                    ssc.Visibility = Visibility.Hidden;
                     Vector dist = it.Center - new Point(512, 300);
 
                     double angle = Math.Atan2(300 - it.Center.Y, 512 - it.Center.X);
@@ -135,6 +135,8 @@ namespace IPS.TabletPainting
 
         void it_ContainerManipulationDelta(object sender, ContainerManipulationDeltaEventArgs e)
         {
+            //Put in to limit the color pickers to a circle.
+            /*
             ScatterViewItem it = sender as ScatterViewItem;
             Vector dist = it.Center - new Point(512, 300);
 
@@ -149,6 +151,7 @@ namespace IPS.TabletPainting
                 it.Orientation = deg + 180;
             else
                 it.Orientation = deg ;
+            */
         }
 
         void it_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)

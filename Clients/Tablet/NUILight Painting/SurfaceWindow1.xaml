@@ -24,6 +24,11 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
                 <ResourceDictionary Source="Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="{x:Type my:SurfaceButton}" BasedOn="{StaticResource MetroButton}">
+                <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+                <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+            </Style>
             <Style TargetType="{x:Type Custom:SurfaceCheckBox}" BasedOn="{StaticResource MetroCheckBox}"></Style>
         
 <!-- Base Grid style for 55 dpi -->
@@ -53,81 +58,6 @@
 			<Setter Property="BorderThickness"
 				Value="2"/>
 		</Style>
-
-<!-- ButtonBase -->
-		<Style
-			TargetType="{x:Type my:SurfaceButton}" 
-			BasedOn="{StaticResource ControlBaseStyle}">
-			<Setter Property="IsTabStop"
-				Value="False" />
-			<Setter Property="Focusable"
-				Value="True" />
-			<Setter Property="Background"
-				Value="{DynamicResource {x:Static Custom:SurfaceColors.ButtonBackgroundBrushKey}}" />
-			<Setter Property="Foreground"
-				Value="{DynamicResource {x:Static Custom:SurfaceColors.ButtonForegroundBrushKey}}" />
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="{x:Type my:SurfaceButton}">
-						<ControlTemplate.Resources>
-							<Storyboard x:Key="Press">
-								<DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
-									Storyboard.TargetName="PressOverlay"
-									Storyboard.TargetProperty="(UIElement.Opacity)">
-									<SplineDoubleKeyFrame KeyTime="00:00:00.1000000"
-										Value="1" />
-								</DoubleAnimationUsingKeyFrames>
-							</Storyboard>
-							<Storyboard x:Key="Release">
-								<DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
-									Storyboard.TargetName="PressOverlay"
-									Storyboard.TargetProperty="(UIElement.Opacity)">
-									<SplineDoubleKeyFrame KeyTime="00:00:00.1500000"
-										Value="0" />
-								</DoubleAnimationUsingKeyFrames>
-							</Storyboard>
-						</ControlTemplate.Resources>
-						<Grid x:Name="Grid"
-							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
-							<Rectangle  x:Name="ButtonBody"
-								Fill ="{TemplateBinding Background}"
-								SnapsToDevicePixels ="{TemplateBinding SnapsToDevicePixels}"/>
-							<Rectangle  x:Name="PressOverlay"
-								Opacity="0"
-								Fill ="{DynamicResource {x:Static Custom:SurfaceColors.ButtonBackgroundPressedBrushKey}}" 							             
-								SnapsToDevicePixels ="{TemplateBinding SnapsToDevicePixels}"/>
-							<ContentPresenter  x:Name="Content"
-								SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						</Grid>
-
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsPressed"
-								Value="True">
-								<Trigger.EnterActions>
-									<BeginStoryboard Storyboard="{StaticResource Press}" />
-								</Trigger.EnterActions>
-								<Trigger.ExitActions>
-									<BeginStoryboard Storyboard="{StaticResource Release}" />
-								</Trigger.ExitActions>
-								<Setter Property="Foreground"
-									Value="{DynamicResource {x:Static Custom:SurfaceColors.ButtonForegroundPressedBrushKey}}"/>
-							</Trigger>
-							<Trigger Property="IsEnabled"
-								Value="False">
-								<Setter Property="Fill"
-									Value="{DynamicResource {x:Static Custom:SurfaceColors.ButtonBackgroundDisabledBrushKey}}"
-									TargetName="ButtonBody" />
-								<Setter Property="Foreground"
-									Value="{DynamicResource {x:Static Custom:SurfaceColors.ButtonForegroundDisabledBrushKey}}"/>
-								<Setter Property="Opacity"
-									Value="0.33"
-									TargetName="Content" />
-							</Trigger>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
 </ResourceDictionary>
     </Custom:SurfaceWindow.Resources>
 
@@ -137,15 +67,15 @@
             <me:RigView x:Name="rigview"/>
             
         </Grid>
-        <Grid x:Name="setup" Width="1024" Height="640" Grid.ColumnSpan="2" Grid.RowSpan="2">
+        <Grid x:Name="setup" Width="1024" Height="640" Grid.ColumnSpan="2" Grid.RowSpan="2" d:IsHidden="True">
         	<Grid.Background>
         		<ImageBrush ImageSource="rect3342.png"/>
         	</Grid.Background>
             <Label HorizontalContentAlignment="Center" Margin="0,281,53,290" Foreground="White" Content="Choose an available server" HorizontalAlignment="Right" FontSize="18" />
-            <my:SurfaceListBox Background="{x:Null}" BorderBrush="{x:Null}" Margin="766,0,58,81" x:Name="servers" SelectionChanged="servers_SelectionChanged" Height="232.747" VerticalAlignment="Bottom" Width="200" />
+            <my:SurfaceListBox BorderBrush="{x:Null}" Margin="766,0,58,81" x:Name="servers" SelectionChanged="servers_SelectionChanged" Height="232.747" VerticalAlignment="Bottom" Width="200" Background="{x:Null}" />
             <TextBox Height="23" Margin="150,551,658,0" x:Name="address" VerticalAlignment="Top" Text="" Visibility="Hidden" />
-            <Button VerticalAlignment="Bottom" x:Name="surfaceButton10" FontSize="25" Click="surfaceButton10_Click" Content="Start" Margin="766,0,58,31.746" Width="200" />
-            <Button Height="44" VerticalAlignment="Center" x:Name="surfaceButton11" HorizontalAlignment="Center" FontSize="25" Click="surfaceButton11_Click"  Content="Exit" Width="73" Margin="923,8,28,716" />            
+            <my:SurfaceButton VerticalAlignment="Bottom" x:Name="surfaceButton10" FontSize="25" Click="surfaceButton10_Click" Content="Start" Margin="766,0,58,31.746" Width="200" />
+            <my:SurfaceButton Height="44" VerticalAlignment="Center" x:Name="surfaceButton11" HorizontalAlignment="Center" FontSize="25" Click="surfaceButton11_Click"  Content="Exit" Width="73" Margin="923,8,28,716" />            
             <m:MetroProgressBar HorizontalAlignment="Right" Margin="0,0,53,320" VerticalAlignment="Bottom" Width="157" IsIndeterminate="True" Height="10" Foreground="#FFE47E26"/>
             <Label Content="Finger Painting" FontFamily="/NUILight.SurfaceDesk;component/#Segoe" FontSize="48" HorizontalAlignment="Right" HorizontalContentAlignment="Center" Margin="0,221,53,0" VerticalAlignment="Top" Width="Auto" />
             <m:ProgressRing x:Name="progress" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20,0,0,20" d:LayoutOverrides="Width" Visibility="Hidden" Foreground="#FFE47E26"/>
