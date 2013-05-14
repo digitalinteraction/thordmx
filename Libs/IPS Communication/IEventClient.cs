@@ -14,7 +14,6 @@ namespace IPS.Communication
         void RegisterHandler(DmxEventHandler dothis, string osc_type, string osc_name, string osc_device);
         void UnregisterHandler(string osc_type, string osc_name, string osc_device);
         void UnregisterHandler(string osc_device);
-        //void PublishLiveDmx(byte[] live);
         string Name { get; }
     }
 }
