@@ -59,6 +59,7 @@ namespace IPS.Communication.Plugins
             this.Password = Stomp.Properties.Settings.Default.password;
             this.Port = Stomp.Properties.Settings.Default.port;
             this.ServerUri = Stomp.Properties.Settings.Default.server;
+            this.Topic = Stomp.Properties.Settings.Default.topic;
         }
 
         //private Socket statussocket;
