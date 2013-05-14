@@ -221,10 +221,10 @@ namespace IPS.Server
             }
 
             osc = new DmxManager();
-
+            settings.Items.Add(new ToolStripLabel() { Text = "Inputs" });
             foreach (var o in osc.Clients)
             {
-                var t = new TabStripButton() { Text = o.Name };
+                var t = new TabStripButton() { Text = o.Name,TextAlign=ContentAlignment.MiddleLeft };
                 t.Tag = o;
                 t.Click += new EventHandler((oc, e) =>
                 {
@@ -233,9 +233,11 @@ namespace IPS.Server
                 settings.Items.Add(t);
             }
 
+            settings.Items.Add(new ToolStripLabel() { Text="Outputs" });
+
             foreach (var o in osc.Outputs)
             {
-                var t = new TabStripButton() { Text = o.Name };
+                var t = new TabStripButton() { Text = o.Name, TextAlign = ContentAlignment.MiddleLeft };
                 t.Tag = o;
                 t.Click += new EventHandler((oc, e) =>
                 {
@@ -789,6 +791,11 @@ namespace IPS.Server
                     backup.Flush();
                     backup.Position = 0;
             }
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://ips.codeplex.com");
         }
     }
 }

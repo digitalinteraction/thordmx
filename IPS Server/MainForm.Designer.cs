@@ -68,6 +68,7 @@
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.propertygrid = new System.Windows.Forms.PropertyGrid();
             this.settings = new Messir.Windows.Forms.TabStrip();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -266,6 +267,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.linkLabel1);
             this.tabPage1.Controls.Add(this.button2);
             this.tabPage1.Controls.Add(this.groupBox3);
             this.tabPage1.Controls.Add(this.groupBox2);
@@ -471,10 +473,10 @@
             this.propertygrid.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.propertygrid.HelpVisible = false;
-            this.propertygrid.Location = new System.Drawing.Point(99, 3);
+            this.propertygrid.Location = new System.Drawing.Point(123, 3);
             this.propertygrid.Name = "propertygrid";
             this.propertygrid.PropertySort = System.Windows.Forms.PropertySort.Alphabetical;
-            this.propertygrid.Size = new System.Drawing.Size(251, 368);
+            this.propertygrid.Size = new System.Drawing.Size(227, 368);
             this.propertygrid.TabIndex = 4;
             this.propertygrid.ToolbarVisible = false;
             // 
@@ -486,11 +488,24 @@
             this.settings.Location = new System.Drawing.Point(3, 3);
             this.settings.Name = "settings";
             this.settings.RenderStyle = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.settings.SelectedTab = null;
             this.settings.Size = new System.Drawing.Size(25, 368);
             this.settings.TabIndex = 3;
             this.settings.Text = "tabStrip1";
             this.settings.UseVisualStyles = true;
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.linkLabel1.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.linkLabel1.Location = new System.Drawing.Point(9, 230);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(120, 13);
+            this.linkLabel1.TabIndex = 8;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "http://ips.codeplex.com";
+            this.linkLabel1.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // MainForm
             // 
@@ -516,6 +531,7 @@
             this.contextMenuStrip1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
@@ -573,6 +589,7 @@
         private System.Windows.Forms.PropertyGrid propertygrid;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }
 
