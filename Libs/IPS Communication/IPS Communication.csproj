@@ -82,6 +82,7 @@
     <Compile Include="IDmxOutput.cs" />
     <Compile Include="IEventClient.cs" />
     <Compile Include="DmxManager.cs" />
+    <Compile Include="ILoggable.cs" />
     <Compile Include="IServerService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

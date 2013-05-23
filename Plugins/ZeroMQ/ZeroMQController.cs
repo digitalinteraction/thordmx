@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using ZeroMQ;
 using System.IO;
 using System.Net;
 using IPS.Controller;
-using ZeroMQ;
+using ZMQ;
 
-namespace IPS.Communication.Plugins
+namespace IPS.Communication.Plugins.ZeroMQ
 {
-    public class ZeroMQController:IController
+    public class ZeroMQController : IController, ILoggable
     {
         //MessagePackSerializer<ChannelData> serializer = MessagePackSerializer.Create<ChannelData>();
-        ZmqContext context = ZmqContext.Create();
-        ZmqSocket client;
+        Context context = new Context();
+        Socket client;
         
         //MemoryStream stream = new MemoryStream();
         string server;
@@ -118,9 +118,15 @@ namespace IPS.Communication.Plugins
         public void Start()
         {
             //request_socket.Bind("tcp://"+server+":8887");
-            client = context.CreateSocket(SocketType.PUSH);
-            client.ReceiveHighWatermark = 1;
+            client = context.Socket(SocketType.PUSH);
             client.Connect("tcp://" + server + ":8887");
+        }
+
+        public event Action<string> OnLogEvent;
+        private bool debug = false;
+        public bool DebugMode
+        {
+            set { debug = true; }
         }
     }
 }

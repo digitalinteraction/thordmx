@@ -14,7 +14,7 @@ using System.Web;
 
 namespace IPS.Communication.Plugins
 {
-    public class WebSocketsEventClient:IEventClient,IServerService
+    public class WebSocketsEventClient : IEventClient, IServerService, ILoggable
     {
         Dictionary<string, Dictionary<string, DmxEventHandler>> handlers = new Dictionary<string, Dictionary<string, DmxEventHandler>>();
 
@@ -22,9 +22,11 @@ namespace IPS.Communication.Plugins
 
         public int Port { get; private set; }
 
+
+
         public void Connect()
         {
-            Port = 8283;
+            
             try
             {
                 //start server socket, for fast comms
@@ -113,7 +115,12 @@ namespace IPS.Communication.Plugins
 
         public void Disconnect()
         {
-            sse.Stop();
+            try
+            {
+                sse.Stop();
+                sse.Dispose();
+            }
+            catch { }
         }
 
         public void RegisterHandler(DmxEventHandler dothis, string osc_type, string osc_name, string osc_device)
@@ -161,7 +168,7 @@ namespace IPS.Communication.Plugins
 
         public WebSocketsEventClient()
         {
-
+            Port = 8283;
         }
 
 
@@ -186,6 +193,13 @@ namespace IPS.Communication.Plugins
                 d.Add(Port, "_wsk._tcp");
                 return d;
             }
+        }
+
+        public event Action<string> OnLogEvent;
+        private bool debug = false;
+        public bool DebugMode
+        {
+            set { debug = true; }
         }
     }
 }

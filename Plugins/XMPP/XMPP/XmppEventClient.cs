@@ -13,7 +13,7 @@ using agsXMPP;
 
 namespace IPS.Communication.Plugins
 {
-    public class XmppEventClient:IEventClient
+    public class XmppEventClient : IEventClient, ILoggable
     {
         
         Dictionary<string, Dictionary<string, DmxEventHandler>> handlers = new Dictionary<string, Dictionary<string, DmxEventHandler>>();
@@ -210,6 +210,13 @@ namespace IPS.Communication.Plugins
             get {
                 return null;
             }
+        }
+
+        public event Action<string> OnLogEvent;
+        private bool debug = false;
+        public bool DebugMode
+        {
+            set { debug = true; }
         }
     }
 }

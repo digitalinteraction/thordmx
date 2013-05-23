@@ -160,6 +160,7 @@ namespace IPS.Server
             {
                 ////start server socket, for feedback + fast comms
                 sse = new Alchemy.WebSocketServer(8282, IPAddress.Any);
+                sse.FlashAccessPolicyEnabled = false;
                 sse.OnConnected = OnConnected;
                 sse.OnDisconnect = OnDisconnect;
                 sse.Start();

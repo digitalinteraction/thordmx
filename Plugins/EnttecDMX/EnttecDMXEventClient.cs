@@ -10,10 +10,11 @@ using System.Threading;
 using System.Diagnostics;
 using CommandLine;
 using System.IO.Ports;
+using IPS.Plugins.EnttecDMX.Properties;
 
 namespace IPS.Communication.Plugins
 {
-    public class EnttecDMXEventClient:IEventClient,IServerService
+    public class EnttecDMXEventClient : IEventClient, IServerService, ILoggable
     {
         string FIRMWARE_FILENAME = "main.bin";
         string VERSION_STRING = "1.44";
@@ -40,16 +41,16 @@ namespace IPS.Communication.Plugins
 
         Dictionary<string, Dictionary<string, DmxEventHandler>> handlers = new Dictionary<string, Dictionary<string, DmxEventHandler>>();
 
-        private string port="COM1";
+        private string port="";
 
-        [Option("i", "input port (serial input)", Required = false, HelpText = "EnttecDMX Serial Port (For Input)")]
+        [Option("i", "input port (serial input)", Required = false, HelpText = "EnttecDMX Serial Port (For Input)", DefaultValue="")]
         [TypeConverter(typeof(RuleConverter))]
         public string SerialPort
         {
             get
             {
                 string S = "";
-                if (port != null)
+                if (port != "")
                 {
                     S = port;
                 }
@@ -285,6 +286,8 @@ namespace IPS.Communication.Plugins
 
         public EnttecDMXEventClient()
         {
+            if (Settings.Default.input != "")
+                port = Settings.Default.input;
             ICommandLineParser parser = new CommandLineParser();
             if (parser.ParseArguments(Environment.GetCommandLineArgs(), this))
             {
@@ -295,7 +298,18 @@ namespace IPS.Communication.Plugins
 
         public void Disconnect()
         {
-            close_serial_port();
+            try
+            {
+                close_serial_port();
+            }
+            catch { }
+        }
+
+        public event Action<string> OnLogEvent;
+        private bool debug = false;
+        public bool DebugMode
+        {
+            set { debug = true; }
         }
     }
 }

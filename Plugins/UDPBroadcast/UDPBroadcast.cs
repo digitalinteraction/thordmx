@@ -11,7 +11,7 @@ using System.ComponentModel;
 
 namespace IPS.Communication.Plugins
 {
-    public class UDPBroadcast : IDmxOutput,IServerService
+    public class UDPBroadcast : IDmxOutput, IServerService, ILoggable
     {
 
         public UDPBroadcast()
@@ -38,7 +38,7 @@ namespace IPS.Communication.Plugins
             get
             {
                 var d = new Dictionary<int, string>();
-                d.Add(8888, "_dmx._udp");
+                d.Add(BroadcastPort, "_dmx._udp");
                 return d;
             }
         }
@@ -89,6 +89,13 @@ namespace IPS.Communication.Plugins
                 statussocket.Close();
             }
             catch { }
+        }
+
+        public event Action<string> OnLogEvent;
+        private bool debug = false;
+        public bool DebugMode
+        {
+            set { debug = true; }
         }
     }
 }

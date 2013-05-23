@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO.Ports;
 using System.ComponentModel;
 using CommandLine;
+using IPS.Plugins.EnttecDMX.Properties;
 
 namespace IPS.Communication.Plugins
 {
@@ -31,7 +32,7 @@ namespace IPS.Communication.Plugins
     }
 
 
-	public class SerialDMX:IDmxOutput
+	public class SerialDMX:IDmxOutput,ILoggable
 	{
 
 string FIRMWARE_FILENAME  		= "main.bin";
@@ -64,16 +65,17 @@ public byte[] GetChannelData()
 	return buffer;
 }
 
-private string port="COM1";
 
-[Option("p", "port (serial)", Required = false, HelpText = "EnttecDMX Serial Port")]
+private string port="";
+
+[Option("p", "port (serial)", Required = false, HelpText = "EnttecDMX Serial Port",DefaultValue="")]
 [TypeConverter(typeof(RuleConverter))]
 public string SerialPort
 {
     get
     {
         string S = "";
-        if (port != null)
+        if (port != "")
         {
             S = port;
         }
@@ -82,7 +84,7 @@ public string SerialPort
             if (ListAvailablePorts().Length > 0)
             {
                 //Sort the list before displaying it
-                Array.Sort(ListAvailablePorts());
+                //Array.Sort(ListAvailablePorts());
                 S = ListAvailablePorts()[0];
             }
         }
@@ -107,7 +109,11 @@ private void open_serial_port(string port_num)
 
 private void close_serial_port()
 {
-	ser.Close();
+    try
+    {
+        ser.Close();
+    }
+    catch { }
 }
 
 private void flush_rx()
@@ -120,27 +126,36 @@ private void flush_rx()
 
 public void UpdateChannel(int channel, int value)
 {
-	if (channel < 1 || channel > 512)
-		return;
-	buffer[channel] = (byte)value;
-	buffer[0]=0;
-	transmit_to_widget(OUTPUT_ONLY_SEND_DMX_LABEL, buffer);
+    if (ser != null)
+    {
+        if (channel < 1 || channel > 512)
+            return;
+        buffer[channel] = (byte)value;
+        buffer[0] = 0;
+        transmit_to_widget(OUTPUT_ONLY_SEND_DMX_LABEL, buffer);
+    }
 }
 
 public void UpdateChannels(byte[] channels)
 {
-	buffer = channels;
-	buffer[0] = 0;
-	transmit_to_widget(OUTPUT_ONLY_SEND_DMX_LABEL, buffer);
+    if (ser != null)
+    {
+        buffer = channels;
+        buffer[0] = 0;
+        transmit_to_widget(OUTPUT_ONLY_SEND_DMX_LABEL, buffer);
+    }
 }
 
 public void BlackOut()
 {
-	for (int i = 0; i < buffer.Length; i++)
-	{
-		buffer[i] = 0;
-	}
-	transmit_to_widget(OUTPUT_ONLY_SEND_DMX_LABEL, buffer);
+    if (ser != null)
+    {
+        for (int i = 0; i < buffer.Length; i++)
+        {
+            buffer[i] = 0;
+        }
+        transmit_to_widget(OUTPUT_ONLY_SEND_DMX_LABEL, buffer);
+    }
 }
 
 private void transmit_to_widget(byte label, byte[] data)
@@ -165,11 +180,14 @@ private void transmit_to_widget(byte label, byte[] data)
 
 public SerialDMX()
 {
+    if (Settings.Default.input != "")
+        port = Settings.Default.output;
     ICommandLineParser parser = new CommandLineParser();
     if (parser.ParseArguments(Environment.GetCommandLineArgs(), this))
     {
         // consume Options type properties
     }
+    
 }
 
 public void Start()
@@ -178,18 +196,32 @@ public void Start()
     Debug.Print("\nDMX USB Pro Widget, version " + (VERSION_STRING));
     // Initialize serial interface
     this.portnum = SerialPort;
-    open_serial_port(portnum);
+    Settings.Default.input = this.portnum;
+    Settings.Default.Save();
+    if (portnum!=null)
+        open_serial_port(portnum);
 }
 
 		public void Stop()
 		{
-			close_serial_port();
+            try
+            {
+                close_serial_port();
+            }
+            catch { }
 		}
 
 
         public string Name
         {
             get { return "Enttec DMX"; }
+        }
+
+        public event Action<string> OnLogEvent;
+        private bool debug = false;
+        public bool DebugMode
+        {
+            set { debug = true; }
         }
     }
 }

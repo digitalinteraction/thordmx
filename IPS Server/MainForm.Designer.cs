@@ -50,6 +50,7 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.button2 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -68,7 +69,7 @@
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.propertygrid = new System.Windows.Forms.PropertyGrid();
             this.settings = new Messir.Windows.Forms.TabStrip();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -113,7 +114,7 @@
             this.status.Location = new System.Drawing.Point(9, 16);
             this.status.Name = "status";
             this.status.SelectionMode = System.Windows.Forms.SelectionMode.None;
-            this.status.Size = new System.Drawing.Size(325, 82);
+            this.status.Size = new System.Drawing.Size(325, 134);
             this.status.TabIndex = 1;
             // 
             // groupBox3
@@ -175,7 +176,7 @@
             this.groupBox5.Controls.Add(this.clients);
             this.groupBox5.Location = new System.Drawing.Point(7, 254);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(340, 114);
+            this.groupBox5.Size = new System.Drawing.Size(340, 91);
             this.groupBox5.TabIndex = 6;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Connected Clients";
@@ -187,7 +188,7 @@
             this.connectedclients.LargeImageList = this.imageList1;
             this.connectedclients.Location = new System.Drawing.Point(8, 16);
             this.connectedclients.Name = "connectedclients";
-            this.connectedclients.Size = new System.Drawing.Size(326, 92);
+            this.connectedclients.Size = new System.Drawing.Size(326, 69);
             this.connectedclients.SmallImageList = this.imageList1;
             this.connectedclients.TabIndex = 1;
             this.connectedclients.UseCompatibleStateImageBehavior = false;
@@ -267,6 +268,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.checkBox1);
             this.tabPage1.Controls.Add(this.linkLabel1);
             this.tabPage1.Controls.Add(this.button2);
             this.tabPage1.Controls.Add(this.groupBox3);
@@ -281,6 +283,20 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Settings";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.linkLabel1.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.linkLabel1.Location = new System.Drawing.Point(9, 230);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(120, 13);
+            this.linkLabel1.TabIndex = 8;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "http://ips.codeplex.com";
+            this.linkLabel1.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // button2
             // 
@@ -488,24 +504,22 @@
             this.settings.Location = new System.Drawing.Point(3, 3);
             this.settings.Name = "settings";
             this.settings.RenderStyle = System.Windows.Forms.ToolStripRenderMode.Professional;
+            this.settings.SelectedTab = null;
             this.settings.Size = new System.Drawing.Size(25, 368);
             this.settings.TabIndex = 3;
             this.settings.Text = "tabStrip1";
             this.settings.UseVisualStyles = true;
             // 
-            // linkLabel1
+            // checkBox1
             // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.linkLabel1.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.linkLabel1.Location = new System.Drawing.Point(9, 230);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(120, 13);
-            this.linkLabel1.TabIndex = 8;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "http://ips.codeplex.com";
-            this.linkLabel1.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(6, 351);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(88, 17);
+            this.checkBox1.TabIndex = 9;
+            this.checkBox1.Text = "Debug Mode";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // MainForm
             // 
@@ -590,6 +604,7 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 
