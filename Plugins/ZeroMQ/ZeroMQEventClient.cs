@@ -9,41 +9,43 @@ using System.Net;
 using System.Threading;
 using System.Diagnostics;
 using ZeroMQ;
+using ZMQ;
 
-namespace IPS.Communication.Plugins
+namespace IPS.Communication.Plugins.ZeroMQ
 {
-    public class ZeroMQEventClient:IEventClient,IServerService
+    public class ZeroMQEventClient : IEventClient, IServerService, ILoggable
     {
         Dictionary<string, Dictionary<string, DmxEventHandler>> handlers = new Dictionary<string, Dictionary<string, DmxEventHandler>>();
 
-        ZmqContext context = ZmqContext.Create();
-        ZmqSocket server;
+        Context context = new Context();
+        Socket server;
+
+
         public void Connect()
         {
             try
             {
-                server = context.CreateSocket(SocketType.PULL);
+                server = context.Socket(SocketType.PULL);
                 server.Bind("tcp://*:8887");
-                server.ReceiveHighWatermark = 1;
                 //thread..
 
                 Thread t = new Thread(new ThreadStart(() => {
                     while (true)
                     {
-                        var msg = server.ReceiveFrame();
+                        var msg = server.Recv();
                         try
                         {
-                            if (msg.Buffer.Length == 514) //if its from the python implementation...
+                            if (msg.Length == 514) //if its from the python implementation...
                             {
-                                var b = msg.Buffer.Skip(1).Take(512).Cast<object>().ToArray();
+                                var b = msg.Skip(1).Take(512).Cast<object>().ToArray();
                                 ProcessMessage(b, "<zeromq>", ChannelData.MessageType.UPDATEALL);
-                            } else if (msg.Buffer.Length >= 512)//if its from the c# implementation
+                            } else if (msg.Length >= 512)//if its from the c# implementation
                             {
-                                var b = msg.Buffer.Take(512).Cast<object>().ToArray();
+                                var b = msg.Take(512).Cast<object>().ToArray();
                                 ProcessMessage(b, "<zeromq>", ChannelData.MessageType.UPDATEALL);
                             }                            
                         }
-                        catch (Exception e) {
+                        catch (System.Exception e) {
                             
                         }
                     }
@@ -63,7 +65,13 @@ namespace IPS.Communication.Plugins
 
         byte?[] temp = new byte?[512];
 
-        private void ProcessMessage(object[] vals, string device,ZeroMQ.ChannelData.MessageType msgt)
+        public int Port
+        {
+            get;
+            set;
+        }
+
+        private void ProcessMessage(object[] vals, string device,ChannelData.MessageType msgt)
         {
             //string device = c.Device;
             string address;
@@ -146,7 +154,15 @@ namespace IPS.Communication.Plugins
         public void Disconnect()
         {
             //server.Unbind("tcp://*:8887");
-            server.Close();
+            //server.Unbind("tcp://*:8887");
+            //server.Disconnect("tcp://*:8887");
+            //server.Close();
+            try
+            {
+                server.Dispose();
+                context.Dispose();
+            }
+            catch { }
         }
 
         public void RegisterHandler(DmxEventHandler dothis, string osc_type, string osc_name, string osc_device)
@@ -194,7 +210,7 @@ namespace IPS.Communication.Plugins
 
         public ZeroMQEventClient()
         {
-
+            Port = 8887;
         }
 
 
@@ -206,7 +222,10 @@ namespace IPS.Communication.Plugins
         ~ZeroMQEventClient()
         {
             if (server != null)
-                server.Close();
+            {
+                server.Dispose();
+            }
+            context.Dispose();
         }
 
 
@@ -216,9 +235,16 @@ namespace IPS.Communication.Plugins
             get
             {
                 var d = new Dictionary<int, string>();
-                d.Add(8887, "_zmq._tcp");
+                d.Add(Port, "_zmq._tcp");
                 return d;
             }
+        }
+
+        public event Action<string> OnLogEvent;
+        private bool debug = false;
+        public bool DebugMode
+        {
+            set { debug = true; }
         }
     }
 }

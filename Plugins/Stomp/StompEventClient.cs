@@ -14,7 +14,7 @@ using Apache.NMS;
 
 namespace IPS.Communication.Plugins
 {
-    public class StompEventClient : IEventClient
+    public class StompEventClient : IEventClient, ILoggable
     {
 
         Dictionary<string, Dictionary<string, DmxEventHandler>> handlers = new Dictionary<string, Dictionary<string, DmxEventHandler>>();
@@ -112,7 +112,6 @@ namespace IPS.Communication.Plugins
         {
             connected = false;
             consumer.Close();
-            session.Close();
             connection.Close();
         }
 
@@ -198,6 +197,13 @@ namespace IPS.Communication.Plugins
             {
                 return null;
             }
+        }
+
+        public event Action<string> OnLogEvent;
+        private bool debug = false;
+        public bool DebugMode
+        {
+            set { debug = true; }
         }
     }
 }

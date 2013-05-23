@@ -9,7 +9,7 @@ using System.ComponentModel;
 
 namespace IPS.Plugins.WebSockets
 {
-    public class WebSocketsOutput:IDmxOutput,IServerService
+    public class WebSocketsOutput : IDmxOutput, IServerService, ILoggable
     {
         byte[] data = new byte[512];
         public int Port { get; private set; }
@@ -85,7 +85,12 @@ namespace IPS.Plugins.WebSockets
 
         public void Stop()
         {
-            sse.Stop();
+            try
+            {
+                sse.Stop();
+                sse.Dispose();
+            }
+            catch { }
         }
 
         public string Name
@@ -102,6 +107,15 @@ namespace IPS.Plugins.WebSockets
                 d.Add(Port, "_wsko._tcp");
                 return d;
             }
+        }
+
+
+        public event Action<string> OnLogEvent;
+
+        private bool debug = false;
+        public bool DebugMode
+        {
+            set { debug = true; }
         }
     }
 }

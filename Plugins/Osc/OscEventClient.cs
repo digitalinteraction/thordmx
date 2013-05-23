@@ -8,15 +8,21 @@ using System.Collections;
 using System.Net.Sockets;
 using System.Net;
 using System.ComponentModel;
+using IPS.Plugins.Osc.Properties;
 
 
 namespace IPS.Communication.Plugins
 {
-    public class OscEventClient:IEventClient,IServerService
+    public class OscEventClient : IEventClient, IServerService, ILoggable
     {
         OSC.NET.OSCReceiver oscreceiver = null;
         Dictionary<string, Dictionary<string, DmxEventHandler>> handlers = new Dictionary<string, Dictionary<string, DmxEventHandler>>();
         bool connected = false;
+
+        public OscEventClient()
+        {
+            port = IPS.Plugins.Osc.Properties.Settings.Default.port;
+        }
 
         //register message... 
         public void RegisterHandler(DmxEventHandler dothis, string osc_type, string osc_name, string osc_device)
@@ -46,11 +52,14 @@ namespace IPS.Communication.Plugins
             }
         }
 
-        public int Port { get { return port; } }
+        public int Port { get { return port; } set { port = value; } }
         private bool StartedStomp = false;
         //private Socket statussocket;
         public void Connect()
         {
+            Settings.Default.port = port;
+            Settings.Default.Save();
+
             //start osc listening...
             oscreceiver = new OSC.NET.OSCReceiver(port);
             oscreceiver.Connect();
@@ -59,6 +68,7 @@ namespace IPS.Communication.Plugins
             thread = new Thread(new ThreadStart(listen));
             thread.Start();
 
+            OnLogEvent("OSC Receiver Started on Port " + port);
             //broadcast dmx...
             //statussocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             //statussocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
@@ -83,6 +93,8 @@ namespace IPS.Communication.Plugins
                     {
                         if (packet.IsBundle())
                         {
+                            if (debug)
+                                OnLogEvent("OSC bundle received");
                             ArrayList messages = packet.Values;
                             for (int i = 0; i < messages.Count; i++)
                             {
@@ -91,7 +103,11 @@ namespace IPS.Communication.Plugins
                         }
                         else processMessage((OSCMessage)packet);
                     }
-                    else Console.WriteLine("null packet");
+                    else 
+                    {
+                        if (debug)
+                            OnLogEvent("OSC null packet received");
+                    };
                 }
                 catch (Exception e) { Console.WriteLine(e.Message); }
             }
@@ -104,13 +120,14 @@ namespace IPS.Communication.Plugins
         //messages are in the format /type/message/ device, v1, v2, v3, v4
         private void processMessage(OSCMessage message)
         {
+            if (debug)
+                OnLogEvent("OSC Valid Packet Received " + message.Address + " " + message.Values.ToArray().Aggregate((o,e)=>{return o + ", " + e.ToString();}));
             string address = message.Address;
             ArrayList args = message.Values;
-            string device = (string)args[0]; 
+            string device = (string)args[0];
 
             if (address == "/dmx/frameupdate")
             {
-
                 int[] vals = message.Values.ToArray().Skip(2).Take(512).Cast<int>().ToArray();
 
                 if (Enumerable.SequenceEqual(vals, oldvals))
@@ -181,9 +198,16 @@ namespace IPS.Communication.Plugins
         {
             get { 
                 var d = new Dictionary<int, string>();
-                d.Add(12345, "_osc._udp");
+                d.Add(port, "_osc._udp");
                 return d;
             }
+        }
+
+        public event Action<string> OnLogEvent;
+        private bool debug = false;
+        public bool DebugMode
+        {
+            set { debug = true; }
         }
     }
 }

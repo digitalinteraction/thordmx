@@ -35,6 +35,7 @@ namespace IPS.Communication
             set;
         }
 
+        public event Action<string> OnLogEvent;
 
         public List<IDmxOutput> Outputs { get { return dmxoutputs; } }
         public List<IEventClient> Clients { get { return eventsources; } }
@@ -86,23 +87,40 @@ namespace IPS.Communication
             Services.Add(s2);
         }
 
+        public void StopServerBroadcast()
+        {
+            Services.ForEach((o) => { o.Stop(); });
+            Services.Clear();
+        }
+
         public bool IsStarted {get;set;}
+
+        private void ProcessLog(string log)
+        {
+            if (OnLogEvent != null)
+            {
+                OnLogEvent(log);
+            }
+        }
 
         public void Start()
         {
+            SetupServerBroadcast();
             dmxoutputs.ForEach(new Action<IDmxOutput>((o) =>
+            {
+                try
                 {
-                    try
-                    {
-                        o.Start();
-                    }
-                    catch { }
-                }));
+                    (o as ILoggable).OnLogEvent += ProcessLog;
+                    o.Start();
+                }
+                catch { }
+            }));
 
             eventsources.ForEach(new Action<IEventClient>((o) =>
             {
                 try
                 {
+                    (o as ILoggable).OnLogEvent += ProcessLog;
                     o.Connect();
                 }
                 catch { }
@@ -116,12 +134,17 @@ namespace IPS.Communication
             //stop all...
             dmxoutputs.ForEach(new Action<IDmxOutput>((o) =>
             {
+                (o as ILoggable).OnLogEvent -= ProcessLog;
                 o.Stop();
+
             }));
 
-
-            Services.ForEach((o) => { o.Stop(); });
-            eventsources.ForEach((o) => { o.Disconnect(); });
+            //stop Bonjour broadcast
+            StopServerBroadcast();
+            eventsources.ForEach((o) => { 
+                o.Disconnect();
+                (o as ILoggable).OnLogEvent -= ProcessLog;
+            });
         }
 
         public DmxManager()
@@ -164,7 +187,7 @@ namespace IPS.Communication
                 throw new Exception();
             }
 
-            SetupServerBroadcast();
+           
             
             ValidDevices = new List<string>();
             LiveDevices = new Dictionary<string, DateTime>();
@@ -177,15 +200,13 @@ namespace IPS.Communication
                 {
                     Dictionary<string, DateTime> Temp = new Dictionary<string, DateTime>();
 
-                    //NEED TO COPY FROM LiveDevices to Temp to stop cross threading access
-
                     Temp = LiveDevices;
 
                     List<string> remove = new List<string>();
 
                     foreach (KeyValuePair<string,DateTime> kp in Temp)
                     {    
-                        if (kp.Value < DateTime.Now.Subtract(TimeSpan.FromMinutes(1)))
+                        if (kp.Value < DateTime.Now.Subtract(TimeSpan.FromSeconds(10)))
                         {
                             remove.Add(kp.Key);
                         }
@@ -197,7 +218,7 @@ namespace IPS.Communication
                     if (OnDeviceUpdate != null)
                         OnDeviceUpdate(LiveDevices.Keys.ToList());
 
-                    Thread.Sleep(TimeSpan.FromMinutes(1));
+                    Thread.Sleep(1000);
                 }
             }));
             tt.Priority = ThreadPriority.Lowest;
@@ -444,24 +465,41 @@ namespace IPS.Communication
 
         ~DmxManager()
         {
-            eventsources.ForEach(new Action<IEventClient>((o) =>
+            IsStarted = false;
+            //stop all...
+            dmxoutputs.ForEach(new Action<IDmxOutput>((o) =>
+            {
+                try
                 {
-                    if (o != null)
-                    {
-                        try
-                        {
-                            o.Disconnect();
-                        }
-                        catch
-                        {
-                            //do nothing
-                        }
-                    }
-                }));
+                    o.Stop();
+                }
+                catch { }
+            }));
+
+            //stop Bonjour broadcast
+            StopServerBroadcast();
+            eventsources.ForEach((o) => {
+                try
+                {
+                    o.Disconnect();
+                }
+                catch { }
+            });
         }
 
-        
-
-
+        public bool DebugMode
+        {
+            set
+            {
+                dmxoutputs.ForEach(new Action<IDmxOutput>((o) =>
+                {
+                    (o as ILoggable).DebugMode = value;
+                }));
+                eventsources.ForEach((o) =>
+                {
+                    (o as ILoggable).DebugMode = value;
+                });
+            }
+        }
     }
 }

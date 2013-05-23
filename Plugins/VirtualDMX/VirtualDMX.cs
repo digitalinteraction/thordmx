@@ -6,7 +6,7 @@ using IPS.Communication;
 
 namespace IPS.Communication.Plugins
 {
-    public class VirtualDMX:IDmxOutput
+    public class VirtualDMX : IDmxOutput, ILoggable
     {
         byte[] data = new byte[513];
         public void UpdateChannel(int channel, int value)
@@ -43,6 +43,15 @@ namespace IPS.Communication.Plugins
         public string Name
         {
             get { return "Virtual DMX"; }
+        }
+
+
+        public event Action<string> OnLogEvent;
+
+        private bool debug = false;
+        public bool DebugMode
+        {
+            set { debug = true; }
         }
     }
 }

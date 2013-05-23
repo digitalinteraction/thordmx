@@ -67,7 +67,7 @@ namespace IPS.Server
                     logger.Clear();
                     foreach (LoggingEvent ev in events)
                     {
-                        string line = ev.RenderedMessage;
+                        string line = ev.TimeStamp.ToShortTimeString() + " " + ev.RenderedMessage;
                         this.BeginInvoke(new Action<string>((s) =>
                         {
                             // the line we want to log  
@@ -106,7 +106,7 @@ namespace IPS.Server
             //log4net.Config.BasicConfigurator.Configure(logger);
             
 
-            log.Info("Starting...");
+            log.Info("Web Appliction Started");
 
             ICommandLineParser parser = new CommandLineParser();
             if (parser.ParseArguments(args, this))
@@ -221,6 +221,7 @@ namespace IPS.Server
             }
 
             osc = new DmxManager();
+            osc.OnLogEvent += new Action<string>(osc_OnLogEvent);
             settings.Items.Add(new ToolStripLabel() { Text = "Inputs" });
             foreach (var o in osc.Clients)
             {
@@ -254,6 +255,12 @@ namespace IPS.Server
 
             osc.OnReceive += new DmxManager.DmxStatus(osc_OnReceive);
             osc.OnDeviceUpdate += new DmxManager.DevicesStatus(osc_OnDeviceUpdate);
+        }
+
+        void osc_OnLogEvent(string obj)
+        {
+            //display the logs...
+            log.Info(obj);
         }
 
         void Venues_OnVenueChange(Rig obj)
@@ -397,8 +404,7 @@ namespace IPS.Server
                 //status.ForeColor = Color.Green;
                 textBox1.Enabled = false;
                 //comports.Enabled = false;
-                button1.Hide();
-                button2.Show();
+                button1.Enabled = false;
 
                 DmxController.Start();
 
@@ -407,12 +413,16 @@ namespace IPS.Server
                     byte[] chans = new byte[513];
                     backup.Read(chans,0,513);
                     osc.UpdateChannels(chans);
+                    log.Info("Loaded Previous State");
                 }
 
-                
+                button2.Show();
             }
             catch (Exception ex)
             {
+                button1.Enabled = true;
+                button1.Show();
+                button2.Hide();
                 //MessageBox.Show(ex.Message);
                 log.Error(ex.Message);
 
@@ -430,6 +440,7 @@ namespace IPS.Server
             try
             {
                  Open();
+                 propertygrid.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -437,7 +448,7 @@ namespace IPS.Server
                 //status.Items.Insert(0,ex.Message);
                 //status.ForeColor = Color.Red;
 
-                propertygrid.Enabled = false;
+                propertygrid.Enabled = true;
             }
         }
 
@@ -756,7 +767,6 @@ namespace IPS.Server
             if (venues.SelectedItem != null)
             {
                 Venues.MakeCurrent(venues.SelectedItem as Rig);
-                
             }
         }
 
@@ -770,11 +780,12 @@ namespace IPS.Server
             textBox1.Enabled = true;
             propertygrid.Enabled = true;
             //comports.Enabled = false;
-
+            button2.Enabled = false;
             DmxController.Stop();
             button1.Show();
             button2.Hide();
-
+            button2.Enabled = true;
+            button1.Enabled = true;
         }
 
         private void button3_Click_1(object sender, EventArgs e)
@@ -796,6 +807,12 @@ namespace IPS.Server
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("http://ips.codeplex.com");
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            //set verbose mode on logging:
+            osc.DebugMode = checkBox1.Checked;
         }
     }
 }

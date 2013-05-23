@@ -9,7 +9,7 @@ using IPS.Controller;
 
 namespace IPS.Communication.Plugins
 {
-    public class UDPBroadcastFeedback:IFeedback
+    public class UDPBroadcastFeedback : IFeedback, ILoggable
     {
         public UDPBroadcastFeedback()
         {
@@ -43,5 +43,12 @@ namespace IPS.Communication.Plugins
         }
 
         public event Action<byte[]> OnUpdate;
+
+        public event Action<string> OnLogEvent;
+        private bool debug = false;
+        public bool DebugMode
+        {
+            set { debug = true; }
+        }
     }
 }

@@ -10,7 +10,7 @@ using IPS.Controller;
 
 namespace IPS.Communication.Plugins
 {
-    public class OSCController:IController
+    public class OSCController : IController, ILoggable
     {
         public bool Blackout { get; set; }
         public string DeviceName { get; set; }
@@ -97,6 +97,13 @@ namespace IPS.Communication.Plugins
             LiveValues = new byte[512];
             transmitter = new OSC.NET.OSCTransmitter(connectionip, 12345);
             transmitter.Connect();
+        }
+
+        public event Action<string> OnLogEvent;
+        private bool debug = false;
+        public bool DebugMode
+        {
+            set { debug = true; }
         }
     }
 }

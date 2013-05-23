@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="c1952552-df27-4332-234d-12c71167b43f" Name="Interaction Production Server" Language="1033" Version="1.0.2.0" Manufacturer="Newcastle University" UpgradeCode="3709f8aa-0c54-42f6-2345-f9aeb6d2ff53">
+  <Product Id="c1952552-df27-4332-234d-12c71167b43f" Name="Interaction Production Server" Language="1033" Version="1.0.4.0" Manufacturer="Newcastle University" UpgradeCode="3709f8aa-0c54-42f6-2345-f9aeb6d2ff53">
     <Package InstallerVersion="200" Compressed="yes" />
 
     <Icon Id="icon.ico" SourceFile="icon.ico" />
